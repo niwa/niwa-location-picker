@@ -5,7 +5,6 @@ module.exports = {
     mode: 'development',
     entry: {
         app: './src/index.ts',
-        print: './src/print.js'
     },
     devtool: 'inline-source-map',
     devServer: {
