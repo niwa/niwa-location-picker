@@ -14,7 +14,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: 'Output Management'
+            title: 'NIWA Location Picker'
         })
     ],
     output: {
