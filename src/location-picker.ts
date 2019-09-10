@@ -33,6 +33,7 @@ export class LocationPicker implements EventTarget {
 
         // input field for text
         const textInput = document.createElement('input');
+        textInput.setAttribute('value', '192.33 -37.22');
         textInput.setAttribute('type', 'text');
         textInput.setAttribute('id', 'nwLocationField');
         searchFieldContainer.appendChild(textInput);
@@ -89,11 +90,12 @@ export class LocationPicker implements EventTarget {
 
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
+                console.log(position.coords)
                 this.map.getView().setCenter(fromLonLat([position.coords.longitude, position.coords.latitude]))
                 this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
                     "bubbles": true,
                     "cancelable": false,
-                    "detail": {msg: position}
+                    "detail": {msg: position.coords}
                 }));
             });
         } else {
@@ -104,9 +106,9 @@ export class LocationPicker implements EventTarget {
 
 
     private findLocation = () => {
-        const searchExp = document.getElementById('nwLocationField');
-        console.log(document.getElementById('nwLocationField'));
-        // console.log (searchExp.match(/1*[0-9]*\.*[0-9]* \-*[0-9]*\.[0-9]*/));
+        const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
+        console.log(searchExp);
+        console.log (searchExp.match(/(1*[0-9]*\.*[0-9]*)[\s,](\s*\-*[0-9]*\.*[0-9]*)/));
 
 
     }
