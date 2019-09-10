@@ -18,12 +18,8 @@ export class LocationPicker implements EventTarget {
         // container holding the map
         const mapContainer = document.createElement('div');
         mapContainer.setAttribute('id', 'niwaLocationPicker');
-
-
         const searchFieldContainer = document.createElement('div');
-
         const searchButton = document.createElement('button');
-
         searchButton.setAttribute('id','searchInput');
         searchButton.setAttribute('type','button');
         searchButton.innerHTML = 'Search';
@@ -90,7 +86,6 @@ export class LocationPicker implements EventTarget {
 
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
-                console.log(position.coords)
                 this.map.getView().setCenter(fromLonLat([position.coords.longitude, position.coords.latitude]))
                 this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
                     "bubbles": true,
@@ -107,11 +102,38 @@ export class LocationPicker implements EventTarget {
 
     private findLocation = () => {
         const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
-        console.log(searchExp);
-        console.log (searchExp.match(/(1*[0-9]*\.*[0-9]*)[\s,](\s*\-*[0-9]*\.*[0-9]*)/));
 
+        if (this.isLonLat(searchExp)!== null) {
+
+            console.log(this.isLonLat(searchExp)[1]);
+            console.log(this.isLonLat(searchExp)[2]);
+
+
+        };
 
     }
+
+
+    isLonLat = (exp): boolean => {
+
+        let validLonlat: boolean;
+        // checking whether we have a valid lonlat e.g 192.45 -36
+        const step1 = exp.match(/(1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/)
+        if (step1 !== null) {
+
+            // an invalid option has been detected as the user entered a negative lon but also used 'E' or 'W'
+            if ( exp[1].strpos('-') !== -1 && exp[1].strpos('W') !== -1 || (exp[1].strpos('E') !== -1)) {
+                validLonlat = false;
+            } else {
+                validLonlat = true;
+            }
+
+        } else {
+            validLonlat = false;
+        }
+        return validLonlat;
+    }
+
 
 
     public addEventListener = function (type, callback) {

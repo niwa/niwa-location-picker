@@ -28,6 +28,7 @@
     "webpack-dev-server": "^3.8.0"
   },
   "dependencies": {
+    "@types/jasmine": "^3.4.0",
     "lodash": "^4.17.15",
     "ol": "^5.3.3"
   }
