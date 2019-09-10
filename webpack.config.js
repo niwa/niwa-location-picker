@@ -5,7 +5,6 @@ module.exports = {
     mode: 'development',
     entry: {
         app: './src/index.ts',
-        print: './src/print.js'
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -14,7 +13,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: 'Output Management'
+            title: 'NIWA Location Picker'
         })
     ],
     output: {
