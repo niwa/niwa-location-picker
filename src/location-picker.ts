@@ -27,20 +27,29 @@ export class LocationPicker implements EventTarget {
         searchButton.setAttribute('id','searchInput');
         searchButton.setAttribute('type','button');
         searchButton.innerHTML = 'Search';
-
+        searchButton.addEventListener('click', this.findLocation);
         searchFieldContainer.appendChild(searchButton);
 
 
         // input field for text
         const textInput = document.createElement('input');
         textInput.setAttribute('type', 'text');
-        textInput.setAttribute('id', 'locationField');
+        textInput.setAttribute('id', 'nwLocationField');
         searchFieldContainer.appendChild(textInput);
 
         rootElement.appendChild(searchFieldContainer);
         rootElement.appendChild(mapContainer);
         this.createMap('niwaLocationPicker')
     }
+
+
+           // Regex for lon lat e.g. 192.68 -37.21
+           // /1*[0-9]*\.*[0-9]* \-*[0-9]*\.[0-9]*/
+
+
+
+
+
 
 
     private createMap = (elementRef: string) => {
@@ -92,6 +101,16 @@ export class LocationPicker implements EventTarget {
         }
 
     }
+
+
+    private findLocation = () => {
+        const searchExp = document.getElementById('nwLocationField');
+        console.log(document.getElementById('nwLocationField'));
+        // console.log (searchExp.match(/1*[0-9]*\.*[0-9]* \-*[0-9]*\.[0-9]*/));
+
+
+    }
+
 
     public addEventListener = function (type, callback) {
         if (!(type in this.listeners)) {
