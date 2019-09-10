@@ -22,3 +22,12 @@ To run a build
 ```angular2
 npm run build
 ```
+
+
+
+
+
+### Project setup
+The project was set up with help of these guidelines 
+https://webpack.js.org/guides/typescript/
+
