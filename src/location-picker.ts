@@ -7,6 +7,8 @@ import OSM from 'ol/source/OSM.js';
 
 export class LocationPicker {
 
+    public map: OlMap;
+
     constructor(elementRef) {
 
         const rootElement = document.querySelector(elementRef);
@@ -26,7 +28,7 @@ export class LocationPicker {
         const attribution = new Attribution({
             collapsible: false
         });
-        const map = new OlMap({
+        this.map = new OlMap({
             layers: [
                 new TileLayer({
                     source: new OSM()
@@ -35,9 +37,22 @@ export class LocationPicker {
             controls: defaultControls({attribution: false}).extend([attribution]),
             target: elementRef,
             view: new View({
-                center: fromLonLat([174.763336, -40.848461]),
-                zoom: 6
+                zoom: 6,
+                center: fromLonLat([171.763336, -40.848461])
             })
         });
+        this.getGeolocation();
+    }
+    private getGeolocation = () => {
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+
+                this.map.getView().setCenter(fromLonLat([position.coords.longitude, position.coords.latitude]))
+            });
+        } else {
+            this.map.getView().setCenter(fromLonLat([174.763336, -40.848461]))
+        }
+
     }
 }
