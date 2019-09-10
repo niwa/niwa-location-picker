@@ -1,9 +1,17 @@
+#searchInput {
+    padding:2px;
+}
+#locationField, #searchInput {
 
+    display: inline-block;
+    margin: 5px 5px 5px 0;
+
+}
 
 #findMe {
     position: absolute;
     right:20px;
-    top:20px;
+    top:50px;
     font-size:2.5em;
     z-index:200000000;
     border: 3px solid rgba(255,255,255,.7);

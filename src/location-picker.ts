@@ -1,6 +1,6 @@
 import OlMap from 'ol/Map';
 import View from 'ol/View.js';
-import { fromLonLat, toLonLat, transform } from 'ol/proj';
+import {fromLonLat, toLonLat, transform} from 'ol/proj';
 import {defaults as defaultControls, Attribution} from 'ol/control.js';
 import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
@@ -12,13 +12,32 @@ export class LocationPicker implements EventTarget {
 
     constructor(elementRef) {
 
+        // main container
         const rootElement = document.querySelector(elementRef);
 
+        // container holding the map
         const mapContainer = document.createElement('div');
-
-
         mapContainer.setAttribute('id', 'niwaLocationPicker');
 
+
+        const searchFieldContainer = document.createElement('div');
+
+        const searchButton = document.createElement('button');
+
+        searchButton.setAttribute('id','searchInput');
+        searchButton.setAttribute('type','button');
+        searchButton.innerHTML = 'Search';
+
+        searchFieldContainer.appendChild(searchButton);
+
+
+        // input field for text
+        const textInput = document.createElement('input');
+        textInput.setAttribute('type', 'text');
+        textInput.setAttribute('id', 'locationField');
+        searchFieldContainer.appendChild(textInput);
+
+        rootElement.appendChild(searchFieldContainer);
         rootElement.appendChild(mapContainer);
         this.createMap('niwaLocationPicker')
     }
@@ -26,14 +45,16 @@ export class LocationPicker implements EventTarget {
 
     private createMap = (elementRef: string) => {
 
+        // adding in geolocate button
         const mapContainer = document.querySelector('#' + elementRef);
         const geoLocateButton = document.createElement('span');
         geoLocateButton.addEventListener('click', () => {
             this.getGeolocation();
 
         })
-        geoLocateButton.setAttribute('id','findMe');
+        geoLocateButton.setAttribute('id', 'findMe');
         geoLocateButton.innerHTML = '&#9737';
+
 
 
         const attribution = new Attribution({
