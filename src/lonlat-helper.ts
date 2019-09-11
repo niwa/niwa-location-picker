@@ -8,7 +8,7 @@ export class LonlatHelper {
         let validLonlat: boolean;
         // checking whether we have a valid lonlat e.g 192.45 -36
         const regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/)
-        if (regexres[1] !== '' && regexres[2] !== '') {
+        if (regexres !== null && regexres[1] !== '' && regexres[2] !== '') {
             // an invalid option has been detected as the user entered a negative lon but also used 'E' or 'W'
             if (regexres[1].indexOf('-') !== -1 && regexres[1].indexOf('W') !== -1 || (regexres[1].indexOf('E') !== -1)) {
 
@@ -58,8 +58,6 @@ export class LonlatHelper {
             } else {
                 lat = parseFloat(tempLat);
             }
-            console.log('lon', lon);
-            console.log('lat', lat);
             if (lon > 180 || lon < -180 || lat > 90 || lat < -90) {
                 return null;
             }

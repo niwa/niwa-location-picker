@@ -5,15 +5,20 @@ import {defaults as defaultControls, Attribution} from 'ol/control.js';
 import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
 import {LonlatHelper} from "./lonlat-helper";
+import {NominatimHelper} from "./nominatim-helper";
+import {LonLat} from "./lonLat";
 
 export class LocationPicker implements EventTarget {
 
     public map: OlMap;
     private listeners = [];
     public lonlatHelper: LonlatHelper;
+    private nominatim: NominatimHelper;
+
     constructor(elementRef) {
 
         this.lonlatHelper = new LonlatHelper();
+        this.nominatim = new NominatimHelper();
         // main container
         const rootElement = document.querySelector(elementRef);
 
@@ -22,8 +27,8 @@ export class LocationPicker implements EventTarget {
         mapContainer.setAttribute('id', 'niwaLocationPicker');
         const searchFieldContainer = document.createElement('div');
         const searchButton = document.createElement('button');
-        searchButton.setAttribute('id','searchInput');
-        searchButton.setAttribute('type','button');
+        searchButton.setAttribute('id', 'searchInput');
+        searchButton.setAttribute('type', 'button');
         searchButton.innerHTML = 'Search';
         searchButton.addEventListener('click', this.findLocation);
         searchFieldContainer.appendChild(searchButton);
@@ -42,8 +47,6 @@ export class LocationPicker implements EventTarget {
     }
 
 
-
-
     private createMap = (elementRef: string) => {
 
         // adding in geolocate button
@@ -55,7 +58,6 @@ export class LocationPicker implements EventTarget {
         })
         geoLocateButton.setAttribute('id', 'findMe');
         geoLocateButton.innerHTML = '&#9737';
-
 
 
         const attribution = new Attribution({
@@ -99,7 +101,6 @@ export class LocationPicker implements EventTarget {
         const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
 
         const lonLat = this.lonlatHelper.getLonLat(searchExp);
-        console.log(lonLat);
         if (lonLat !== null) {
             this.map.getView().setCenter(fromLonLat([lonLat.lon, lonLat.lat]));
             this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_LONLAT", {
@@ -108,12 +109,30 @@ export class LocationPicker implements EventTarget {
                 "detail": {lonLat: lonLat}
             }));
 
+        } else {
+            const locations = this.nominatim.getLonLatByAddress(searchExp).subscribe((lonLats: LonLat[]) => {
+                const locationListRoot = document.createElement('ul');
+                locationListRoot.setAttribute('id', 'locations')
+                lonLats.forEach((lonLat) => {
+
+                    const locationListElement = document.createElement('li');
+                    locationListElement.innerHTML = lonLat.displayName ;
+                    locationListElement.addEventListener('click', () => {
+                        this.map.getView().setCenter(fromLonLat([lonLat.lon, lonLat.lat]));
+                        this.map.getView().setZoom(11);
+                        locationListRoot.remove();
+                    })
+                    locationListRoot.appendChild(locationListElement);
+                })
+
+                document.getElementById('niwaLocationPicker').appendChild(locationListRoot);
+
+                console.log(lonLats);
+                locations.unsubscribe();
+            })
         }
 
     }
-
-
-
 
 
     public addEventListener = function (type, callback) {
