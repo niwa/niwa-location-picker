@@ -31,7 +31,7 @@ export class LocationPicker implements EventTarget {
 
         // input field for text
         const textInput = document.createElement('input');
-        textInput.setAttribute('value', '192.33 -37.22');
+        textInput.setAttribute('value', '');
         textInput.setAttribute('type', 'text');
         textInput.setAttribute('id', 'nwLocationField');
         searchFieldContainer.appendChild(textInput);
@@ -40,13 +40,6 @@ export class LocationPicker implements EventTarget {
         rootElement.appendChild(mapContainer);
         this.createMap('niwaLocationPicker')
     }
-
-
-           // Regex for lon lat e.g. 192.68 -37.21
-           // /1*[0-9]*\.*[0-9]* \-*[0-9]*\.[0-9]*/
-
-
-
 
 
 
@@ -105,34 +98,21 @@ export class LocationPicker implements EventTarget {
     private findLocation = () => {
         const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
 
-        if (this.lonlatHelper.isLonLat(searchExp)) {
+        const lonLat = this.lonlatHelper.getLonLat(searchExp);
+        console.log(lonLat);
+        if (lonLat !== null) {
+            this.map.getView().setCenter(fromLonLat([lonLat.lon, lonLat.lat]));
+            this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_LONLAT", {
+                "bubbles": true,
+                "cancelable": false,
+                "detail": {lonLat: lonLat}
+            }));
 
-
-
-        };
-
-    }
-
-
-    isLonLat = (exp): boolean => {
-
-        let validLonlat: boolean;
-        // checking whether we have a valid lonlat e.g 192.45 -36
-        const step1 = exp.match(/(1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/)
-        if (step1 !== null) {
-
-            // an invalid option has been detected as the user entered a negative lon but also used 'E' or 'W'
-            if ( exp[1].strpos('-') !== -1 && exp[1].strpos('W') !== -1 || (exp[1].strpos('E') !== -1)) {
-                validLonlat = false;
-            } else {
-                validLonlat = true;
-            }
-
-        } else {
-            validLonlat = false;
         }
-        return validLonlat;
+
     }
+
+
 
 
 

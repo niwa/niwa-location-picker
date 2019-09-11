@@ -58,7 +58,8 @@ export class LonlatHelper {
             } else {
                 lat = parseFloat(tempLat);
             }
-
+            console.log('lon', lon);
+            console.log('lat', lat);
             if (lon > 180 || lon < -180 || lat > 90 || lat < -90) {
                 return null;
             }

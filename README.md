@@ -35,11 +35,14 @@ locationPicker.addEventListener('BROWSER_GEOLOCATED',(pos)=> {
     console.log('pos', pos)
 })
 ```
-#### BROWSER_GEOLOCATED
+##### BROWSER_GEOLOCATED
+
 This event is being triggered when the Browser API (HTML5) was used to find the location of the user. 
 This can happen at the beginning when the page loads or the clicks on the geolocate button.
 
- 
+##### MAP_CENTERED_ON_LONLAT
+
+This vent is beeing triggered after a succesful search for the entered Longitude / Latitude in the search field.
 
 
 
