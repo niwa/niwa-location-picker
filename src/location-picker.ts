@@ -4,14 +4,16 @@ import {fromLonLat, toLonLat, transform} from 'ol/proj';
 import {defaults as defaultControls, Attribution} from 'ol/control.js';
 import TileLayer from 'ol/layer/Tile.js';
 import OSM from 'ol/source/OSM.js';
+import {LonlatHelper} from "./lonlat-helper";
 
 export class LocationPicker implements EventTarget {
 
     public map: OlMap;
     private listeners = [];
-
+    public lonlatHelper: LonlatHelper;
     constructor(elementRef) {
 
+        this.lonlatHelper = new LonlatHelper();
         // main container
         const rootElement = document.querySelector(elementRef);
 
@@ -103,10 +105,8 @@ export class LocationPicker implements EventTarget {
     private findLocation = () => {
         const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
 
-        if (this.isLonLat(searchExp)!== null) {
+        if (this.lonlatHelper.isLonLat(searchExp)) {
 
-            console.log(this.isLonLat(searchExp)[1]);
-            console.log(this.isLonLat(searchExp)[2]);
 
 
         };
