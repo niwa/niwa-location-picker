@@ -29,7 +29,7 @@ export class NominatimHelper {
             if (this.httpRequest.status === 200) {
                 const response = JSON.parse(this.httpRequest.responseText);
                 response.forEach((resp) => {
-                    this.lonLats.push(new LonLat(parseFloat(resp['lon']), parseFloat(resp['lat']), resp['display_name'], resp['class']))
+                    this.lonLats.push(new LonLat(parseFloat(resp['lon']), parseFloat(resp['lat']), resp.boundingbox, resp['display_name'], resp['class']))
                 })
                 this.foundLonLat.next(this.lonLats)
             } else {
