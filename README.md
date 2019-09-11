@@ -42,12 +42,16 @@ This can happen at the beginning when the page loads or the clicks on the geoloc
 
 ##### MAP_CENTERED_ON_LONLAT
 
-This vent is beeing triggered after a succesful search for the entered Longitude / Latitude in the search field.
+This event is being triggered after a succesfull search for the entered Longitude / Latitude in the search field.
 
+#### MAP_CENTERED_ON_ADDRESS
 
+This event is being triggered after a succesfull search for the entered place / address.
 
+#### Project setup
 
-### Project setup
 The project was set up with help of these guidelines 
 https://webpack.js.org/guides/typescript/
 
+The geolacting functionality is provided by Nominatim 
+https://wiki.openstreetmap.org/wiki/Nominatim

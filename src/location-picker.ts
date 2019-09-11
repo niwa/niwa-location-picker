@@ -78,6 +78,14 @@ export class LocationPicker implements EventTarget {
         });
         mapContainer.appendChild(geoLocateButton);
         this.getGeolocation();
+
+        this.map.on('click', ()=> {
+            if (document.getElementById('locations')) {
+                document.getElementById('locations').remove();
+            }
+
+
+        })
     }
     private getGeolocation = () => {
 
@@ -98,6 +106,11 @@ export class LocationPicker implements EventTarget {
 
 
     private findLocation = () => {
+
+        if (document.getElementById('locations')) {
+            document.getElementById('locations').remove();
+        }
+
         const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
 
         const lonLat = this.lonlatHelper.getLonLat(searchExp);
@@ -121,13 +134,18 @@ export class LocationPicker implements EventTarget {
                         this.map.getView().setCenter(fromLonLat([lonLat.lon, lonLat.lat]));
                         this.map.getView().setZoom(11);
                         locationListRoot.remove();
+
+                        this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_ADDRESS", {
+                            "bubbles": true,
+                            "cancelable": false,
+                            "detail": {lonLat: lonLat}
+                        }));
                     })
                     locationListRoot.appendChild(locationListElement);
                 })
 
                 document.getElementById('niwaLocationPicker').appendChild(locationListRoot);
 
-                console.log(lonLats);
                 locations.unsubscribe();
             })
         }
