@@ -81,3 +81,37 @@ https://webpack.js.org/guides/typescript/
 
 The geolacting functionality is provided by Nominatim 
 https://wiki.openstreetmap.org/wiki/Nominatim
+
+
+### Index.ts Cheat sheet
+This is for development only.
+
+```angular2
+
+import {LocationPicker} from "./location-picker";
+import './style.css';
+
+const locationPicker = new LocationPicker('body');
+
+locationPicker.addEventListener('BROWSER_GEOLOCATED',(pos)=> {
+
+    console.log('pos', pos.detail.msg);
+
+
+});
+locationPicker.addEventListener('MAP_CENTERED_ON_LONLAT',(pos)=> {
+    console.log('Lon Lat', pos.detail)
+});
+locationPicker.addEventListener('MAP_CENTERED_ON_ADDRESS',(pos)=> {
+    console.log('Lon Lat', pos.detail)
+});
+
+
+const marker = locationPicker.addMarker(160,-37,'#123456');
+setTimeout(() => {
+    locationPicker.removeMarker(marker);
+
+}, 10000)
+
+
+```
