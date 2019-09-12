@@ -1,4 +1,6 @@
 import {LonLat} from "./lonLat";
+import * as proj from 'ol/proj.js';
+import {boundingExtent} from 'ol/extent';
 
 export class LonlatHelper {
 
@@ -65,7 +67,16 @@ export class LonlatHelper {
         } else {
             return null;
         }
+    }
 
+    public boundingBoxtoExtent = (boundingBox) => {
+        const lowerCorner = [boundingBox[3], boundingBox[1]];
+        const upperCorner = [boundingBox[2], boundingBox[0]];
+        const extent = [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
+        return extent;
+    }
 
+    public projectExtentToOL = (extent) => {
+        return (proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'))
     }
 }
