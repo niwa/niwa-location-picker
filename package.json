@@ -1,5 +1,6 @@
 {
   "name": "niwa-location-picker",
+
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -10,7 +11,7 @@
     "start": "webpack-dev-server --open"
   },
   "keywords": [],
-  "author": "",
+  "author": "Uwe Duesing",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^24.0.9",
