@@ -135,8 +135,6 @@ export class LocationPicker implements EventTarget {
     private moveToLonLat = (lonLat: LonLat) => {
         const lontLatProj = fromLonLat([lonLat.lon, lonLat.lat]);
 
-
-        const ext = boundingExtent(this.lonlatHelper.projectExtentToOL([-173.8963284, 37.3644738,175.9032151, -35.6983921]));
         if (typeof lonLat.boundingBox !=='undefined') {
 
             const extent = this.lonlatHelper.boundingBoxtoExtent(lonLat.boundingBox);
@@ -151,30 +149,44 @@ export class LocationPicker implements EventTarget {
         } else {
             this.view.animate({
                 center: lontLatProj,
-                zoom: 9,
                 duration: 500
             });
         }
     }
 
-    public addMarker = (lon: number, lat: number, color: string): Feature => {
+    public addMarker = (lon: number, lat: number, color: string, url?:string): Feature => {
         const lontLatProj = fromLonLat([lon, lat]);
-        const markerStyle = new Style({
-            image: new CircleStyle({
-                fill: new Fill({
-                    color: color
-                }),
-                stroke: new Stroke({color: 'black', width: 0.5}),
-                radius: 5,
-            })
-        });
 
         const locationMarker = new Feature({
             type: 'locationFound',
             geometry: new Point(lontLatProj)
         });
 
-        locationMarker.setStyle(markerStyle)
+        if (typeof url ==='undefined') {
+            console.log(url);
+            const markerVectorStyle = new Style({
+                image: new CircleStyle({
+                    fill: new Fill({
+                        color: color
+                    }),
+                    stroke: new Stroke({color: 'black', width: 0.5}),
+                    radius: 5,
+                })
+            });
+            locationMarker.setStyle(markerVectorStyle)
+        } else {
+            const markerIconStyle = new Style({
+                image: new Icon(({
+                    src: url,
+                    color: 'white',
+                    scale: 0.5
+                } as any))
+            })
+            locationMarker.setStyle(markerIconStyle)
+        }
+
+
+
         this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
         this.moveToLonLat(new LonLat(lon, lat));
         return locationMarker;
