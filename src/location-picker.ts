@@ -97,7 +97,7 @@ export class LocationPicker implements EventTarget {
         });
 
         mapContainer.appendChild(geoLocateButton);
-        this.getGeolocation();
+        // this.getGeolocation();
 
         this.map.on('click', () => {
             if (document.getElementById('locations')) {
@@ -110,6 +110,8 @@ export class LocationPicker implements EventTarget {
 
     public addMarker = (lon: number, lat: number, color: string): Feature => {
         const lontLatProj = fromLonLat([lon, lat]);
+        this.map.getView().setCenter(lontLatProj);
+
 
         const markerStyle = new Style({
             image: new CircleStyle({
@@ -127,7 +129,7 @@ export class LocationPicker implements EventTarget {
         });
 
         locationMarker.setStyle(markerStyle)
-        this.markerSource.addFeature(locationMarker);
+        this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
         return locationMarker;
     }
 
