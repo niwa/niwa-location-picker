@@ -29,4 +29,25 @@ describe('location picker', () => {
     })
 
 
+    it ('should turn a bounding box into an extent', () => {
+
+        //-37.3644738 173.8963284 -35.6983921 175.9032151
+        const lonloatHelper = new LonlatHelper();
+        const extent = lonloatHelper.boundingBoxtoExtent([-37.3644738,-35.6983921,-173.8963284,175.9032151]);
+        expect(extent[0]).toBe(175.9032151);
+        expect(extent[1]).toBe(-35.6983921);
+        expect(extent[2]).toBe(-173.8963284);
+        expect(extent[3]).toBe(-37.3644738);
+
+    })
+
+    // it('should prject extent into ol', () => {
+    //
+    //     const lonloatHelper = new LonlatHelper();
+    //
+    //     expect(lonloatHelper.projectExtentToOL([175.9032151, -35.6983921, -173.8963284, 37.3644738])).toBe([1,2,3,4])
+    //
+    // })
+
+
 })

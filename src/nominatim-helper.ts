@@ -4,7 +4,8 @@ import {Observable, Subject} from "rxjs";
 export class NominatimHelper {
 
     private httpRequest: XMLHttpRequest;
-    private nominatimSearch = 'https://nominatim.openstreetmap.org/search';
+    private nominatimSearch  = 'https://nominatim.openstreetmap.org/search';
+    private nominatimReverse = 'https://nominatim.openstreetmap.org/search'
     private lonLats: LonLat[];
     public foundLonLat: Subject<LonLat[]>;
 

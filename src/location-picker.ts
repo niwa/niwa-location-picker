@@ -13,16 +13,18 @@ import {NominatimHelper} from "./nominatim-helper";
 import {LonLat} from "./lonLat";
 import markerSource from 'ol/source/Vector.js';
 import * as proj  from 'ol/proj.js';
+import { boundingExtent } from 'ol/extent';
 
 export class LocationPicker implements EventTarget {
 
     public map: OlMap;
     public markerLayer: VectorLayer;
     public markerSource: markerSource;
-    private listeners = [];
     public lonlatHelper: LonlatHelper;
-    private nominatim: NominatimHelper;
 
+    private view: View;
+    private listeners = [];
+    private nominatim: NominatimHelper;
     private geolocatedFeature: Feature;
 
     constructor(elementRef) {
@@ -59,6 +61,10 @@ export class LocationPicker implements EventTarget {
 
     private createMap = (elementRef: string) => {
 
+
+
+        const boundingBox = [-37.3644738, -35.6983921, 173.8963284, 175.9032151];
+
         this.markerSource = new markerSource({
             features: []
         })
@@ -68,6 +74,11 @@ export class LocationPicker implements EventTarget {
         });
 
 
+
+        this.view = new View({
+            zoom: 6,
+            center: fromLonLat([174.763336, -40.848461])
+        })
         // adding in geolocate button
         const mapContainer = document.querySelector('#' + elementRef);
         const geoLocateButton = document.createElement('span');
@@ -90,29 +101,64 @@ export class LocationPicker implements EventTarget {
             ],
             controls: defaultControls({attribution: false}).extend([attribution]),
             target: elementRef,
-            view: new View({
-                zoom: 6,
-                center: fromLonLat([174.763336, -40.848461])
-            })
+            view: this.view
         });
 
         mapContainer.appendChild(geoLocateButton);
         // this.getGeolocation();
 
-        this.map.on('click', () => {
+        this.map.on('click', (evt) => {
             if (document.getElementById('locations')) {
                 document.getElementById('locations').remove();
+
+
             }
 
+            const reprojCoorindates = proj.transform(evt.coordinate,this.map.getView().getProjection(), 'EPSG:4326');
+
+            this.removeMarker(this.geolocatedFeature);
+            const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
+            this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000');
+
+
+            this.dispatchEvent(new CustomEvent("CLICKED_ON_LONLAT", {
+                "bubbles": true,
+                "cancelable": false,
+                "detail": {coords: lonLat}
+            }));
 
         })
+
+    }
+
+
+    private moveToLonLat = (lonLat: LonLat) => {
+        const lontLatProj = fromLonLat([lonLat.lon, lonLat.lat]);
+
+
+        const ext = boundingExtent(this.lonlatHelper.projectExtentToOL([-173.8963284, 37.3644738,175.9032151, -35.6983921]));
+        if (typeof lonLat.boundingBox !=='undefined') {
+
+            const extent = this.lonlatHelper.boundingBoxtoExtent(lonLat.boundingBox);
+            const proj_extent = proj.transformExtent(extent,'EPSG:4326','EPSG:3857');
+
+            this.view.animate({
+                duration: 500,
+            });
+            this.view.fit(proj_extent, {
+                duration: 1000
+            });
+        } else {
+            this.view.animate({
+                center: lontLatProj,
+                zoom: 9,
+                duration: 500
+            });
+        }
     }
 
     public addMarker = (lon: number, lat: number, color: string): Feature => {
         const lontLatProj = fromLonLat([lon, lat]);
-        this.map.getView().setCenter(lontLatProj);
-
-
         const markerStyle = new Style({
             image: new CircleStyle({
                 fill: new Fill({
@@ -130,6 +176,7 @@ export class LocationPicker implements EventTarget {
 
         locationMarker.setStyle(markerStyle)
         this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
+        this.moveToLonLat(new LonLat(lon, lat));
         return locationMarker;
     }
 
@@ -154,6 +201,7 @@ export class LocationPicker implements EventTarget {
             });
         } else {
             this.map.getView().setCenter(fromLonLat([174.763336, -40.848461]))
+
         }
 
     }
@@ -185,8 +233,7 @@ export class LocationPicker implements EventTarget {
                     const locationListElement = document.createElement('li');
                     locationListElement.innerHTML = lonLat.displayName;
                     locationListElement.addEventListener('click', () => {
-                        this.map.getView().setCenter(fromLonLat([lonLat.lon, lonLat.lat]));
-                        this.map.getView().setZoom(11);
+                        this.moveToLonLat(lonLat);
                         locationListRoot.remove();
 
                         this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_ADDRESS", {
