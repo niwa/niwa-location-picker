@@ -6,6 +6,11 @@ The picker also fire events  - see the documentation below.
 ![Alt text](./LocationFinder.png?raw=true "Optional Title")
 
 
+Create a new instance of the location picker. The country code is optional.
+```angular2
+const picker = new LocationPicker('nz');
+
+```
 ## Events
 
 To subscribe to an event triggered by the location picker follow this general idea and replace the event with the one that you are interested in.

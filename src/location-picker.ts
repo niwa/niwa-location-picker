@@ -27,10 +27,11 @@ export class LocationPicker implements EventTarget {
     private nominatim: NominatimHelper;
     private geolocatedFeature: Feature;
 
-    constructor(elementRef) {
+    constructor(elementRef,countyCode?) {
+
 
         this.lonlatHelper = new LonlatHelper();
-        this.nominatim = new NominatimHelper();
+        this.nominatim = new NominatimHelper(countyCode);
         // main container
         const rootElement = document.querySelector(elementRef);
 
@@ -38,8 +39,11 @@ export class LocationPicker implements EventTarget {
         const mapContainer = document.createElement('div');
         mapContainer.setAttribute('id', 'niwaLocationPicker');
         const searchFieldContainer = document.createElement('div');
+        searchFieldContainer.setAttribute('id','searchField')
+
+
         const searchButton = document.createElement('button');
-        searchButton.setAttribute('id', 'searchInput');
+        searchButton.setAttribute('id', 'search');
         searchButton.setAttribute('type', 'button');
         searchButton.innerHTML = 'Search';
         searchButton.addEventListener('click', this.getLocation);
@@ -52,9 +56,10 @@ export class LocationPicker implements EventTarget {
         textInput.setAttribute('type', 'text');
         textInput.setAttribute('id', 'nwLocationField');
         searchFieldContainer.appendChild(textInput);
-
+        searchFieldContainer.appendChild(searchButton);
         rootElement.appendChild(searchFieldContainer);
         rootElement.appendChild(mapContainer);
+
         this.createMap('niwaLocationPicker')
     }
 
@@ -105,6 +110,11 @@ export class LocationPicker implements EventTarget {
             target: elementRef,
             view: this.view
         });
+
+
+
+
+
 
         mapContainer.appendChild(geoLocateButton);
         // this.getGeolocation();
