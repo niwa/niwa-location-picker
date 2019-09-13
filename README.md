@@ -2,6 +2,7 @@
 
 
 This project is a location picker. It provides a wrapper for Openlayers and offers search functionality for addresses and longitude/latitude.
+The picker also fire events  - see you documentation below.
 ![Alt text](./LocationFinder.png?raw=true "Optional Title")
 
 
@@ -30,7 +31,8 @@ This event is being triggered after a succesfull search for the entered Longitud
 
 This event is being triggered after a succesfull search for the entered place / address.
 
-
+#### CLICKED_ON_LONLAT
+This event is being triggered after clicking on the map. It will return the lon/lat for the click event. 
 ## Adding / removing markers
 
 ### addMarker

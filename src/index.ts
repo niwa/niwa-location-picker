@@ -17,5 +17,8 @@ locationPicker.addEventListener('MAP_CENTERED_ON_ADDRESS',(pos)=> {
     console.log('Lon Lat', pos.detail)
 });
 
+locationPicker.addEventListener('CLICKED_ON_LONLAT',(pos)=> {
+    console.log('Lon Lat', pos.detail)
+});
 locationPicker.findLocation('Berlin');
 
