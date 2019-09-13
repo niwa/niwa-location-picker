@@ -112,26 +112,9 @@ export class LocationPicker implements EventTarget {
         });
 
 
-        const geocoder = new Geocoder('nominatim', {
-            provider: 'osm',
-            key: '',
-            lang: 'en-NZ',
-            placeholder: 'Address search',
-            targetType: 'glass-button',
-            limit: 5,
-            countrycodes: 'nz',
-            keepOpen: false,
-            preventDefault: true
-        });
 
-        this.map.addControl(geocoder);
 
-        // on a success address choice, add a marker
-        geocoder.on('addresschosen', (event) => {
-            const lonLat = toLonLat(event.coordinate);
-            console.log(lonLat);
-            // this.addMarker(lonLat[0], lonLat[1]);
-        });
+
 
         mapContainer.appendChild(geoLocateButton);
         // this.getGeolocation();
