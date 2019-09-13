@@ -1,17 +1,19 @@
 {
   "name": "niwa-location-picker",
+
   "version": "1.0.0",
   "description": "",
   "private": true,
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json --coverage",
     "build": "tsc",
     "start": "webpack-dev-server --open"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Uwe Duesing",
+  "license": "Creative Commons Attribution-ShareAlike 4.0 International License.",
   "devDependencies": {
     "@types/jest": "^24.0.9",
     "jest": "^24.1.0",

@@ -1,27 +1,10 @@
 # NIWA Location Picker
 
 
-This project is under development. Soon it will be a universal location picker following this
-story on tracking https://tracking.niwa.co.nz/browse/TIDE-144.
+This project is a location picker. It provides a wrapper for Openlayers and offers search functionality for addresses and longitude/latitude.
+The picker also fire events  - see you documentation below.
+![Alt text](./LocationFinder.png?raw=true "Optional Title")
 
-
-To work on it, simply clone it and run 
-
-````angular2
-npm install
-````
-
-To start the development server:
-
-```angular2
-npm start
-```
-
-
-To run a build 
-```angular2
-npm run build
-```
 
 ## Events
 
@@ -48,7 +31,8 @@ This event is being triggered after a succesfull search for the entered Longitud
 
 This event is being triggered after a succesfull search for the entered place / address.
 
-
+#### CLICKED_ON_LONLAT
+This event is being triggered after clicking on the map. It will return the lon/lat for the click event. 
 ## Adding / removing markers
 
 ### addMarker
