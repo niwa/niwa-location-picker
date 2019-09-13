@@ -2,7 +2,7 @@
 
 
 This project is a location picker. It provides a wrapper for Openlayers and offers search functionality for addresses and longitude/latitude.
-
+![Alt text](./LocationFinder.png?raw=true "Optional Title")
 
 
 ## Events
