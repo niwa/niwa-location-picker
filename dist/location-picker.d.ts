@@ -2,6 +2,7 @@ import OlMap from 'ol/Map';
 import { Vector as VectorLayer } from 'ol/layer.js';
 import { LonlatHelper } from "./lonlat-helper";
 import markerSource from 'ol/source/Vector.js';
+import { Options } from "./options";
 export declare class LocationPicker implements EventTarget {
     map: OlMap;
     markerLayer: VectorLayer;
@@ -11,7 +12,9 @@ export declare class LocationPicker implements EventTarget {
     private listeners;
     private nominatim;
     private geolocatedFeature;
-    constructor(elementRef: any, countyCode?: any);
+    private countryCode;
+    private defaultIcon;
+    constructor(elementRef: any, options?: Options);
     getLocation: () => void;
     private createMap;
     private moveToLonLat;

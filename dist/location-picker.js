@@ -15,7 +15,7 @@ var lonLat_1 = require("./lonLat");
 var Vector_js_1 = require("ol/source/Vector.js");
 var proj = require("ol/proj.js");
 var LocationPicker = /** @class */ (function () {
-    function LocationPicker(elementRef, countyCode) {
+    function LocationPicker(elementRef, options) {
         var _this = this;
         this.listeners = [];
         this.getLocation = function () {
@@ -63,7 +63,12 @@ var LocationPicker = /** @class */ (function () {
                 var reprojCoorindates = proj.transform(evt.coordinate, _this.map.getView().getProjection(), 'EPSG:4326');
                 _this.removeMarker(_this.geolocatedFeature);
                 var lonLat = new lonLat_1.LonLat(reprojCoorindates[0], reprojCoorindates[1]);
-                _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#ff0000');
+                if (typeof _this.defaultIcon !== 'undefined') {
+                    _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', _this.defaultIcon);
+                }
+                else {
+                    _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#ff0000');
+                }
                 _this.dispatchEvent(new CustomEvent("CLICKED_ON_LONLAT", {
                     "bubbles": true,
                     "cancelable": false,
@@ -213,8 +218,12 @@ var LocationPicker = /** @class */ (function () {
             }
             return !event.defaultPrevented;
         };
+        if (typeof options !== 'undefined') {
+            this.countryCode = options.countryCode;
+            this.defaultIcon = options.defaultIcon;
+        }
         this.lonlatHelper = new lonlat_helper_1.LonlatHelper();
-        this.nominatim = new nominatim_helper_1.NominatimHelper(countyCode);
+        this.nominatim = new nominatim_helper_1.NominatimHelper(this.countryCode);
         // main container
         var rootElement = document.querySelector(elementRef);
         // container holding the map

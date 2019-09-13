@@ -1,9 +1,9 @@
 # NIWA Location Picker
 
 
-This project is a location picker. It provides a wrapper for Openlayers and offers search functionality for addresses and longitude/latitude.
-The picker also fire events  - see the documentation below.
-![Alt text](./LocationFinder.png?raw=true "Optional Title")
+
+
+![Alt text](./LocationFinder2.png?raw=true "Test")
 
 
 Create a new instance of the location picker. The country code is optional.

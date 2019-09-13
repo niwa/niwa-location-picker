@@ -14,6 +14,7 @@ import {LonLat} from "./lonLat";
 import markerSource from 'ol/source/Vector.js';
 import * as proj from 'ol/proj.js';
 import {boundingExtent} from 'ol/extent';
+import {Options} from "./options";
 
 export class LocationPicker implements EventTarget {
 
@@ -26,12 +27,21 @@ export class LocationPicker implements EventTarget {
     private listeners = [];
     private nominatim: NominatimHelper;
     private geolocatedFeature: Feature;
+    private countryCode: string;
+    private defaultIcon: string;
 
-    constructor(elementRef,countyCode?) {
+    constructor(elementRef, options?: Options) {
 
+
+        if (typeof options !== 'undefined') {
+
+            this.countryCode = options.countryCode
+            this.defaultIcon = options.defaultIcon;
+
+        }
 
         this.lonlatHelper = new LonlatHelper();
-        this.nominatim = new NominatimHelper(countyCode);
+        this.nominatim = new NominatimHelper(this.countryCode);
         // main container
         const rootElement = document.querySelector(elementRef);
 
@@ -39,7 +49,7 @@ export class LocationPicker implements EventTarget {
         const mapContainer = document.createElement('div');
         mapContainer.setAttribute('id', 'niwaLocationPicker');
         const searchFieldContainer = document.createElement('div');
-        searchFieldContainer.setAttribute('id','searchField')
+        searchFieldContainer.setAttribute('id', 'searchField')
 
 
         const searchButton = document.createElement('button');
@@ -112,10 +122,6 @@ export class LocationPicker implements EventTarget {
         });
 
 
-
-
-
-
         mapContainer.appendChild(geoLocateButton);
         // this.getGeolocation();
 
@@ -130,7 +136,11 @@ export class LocationPicker implements EventTarget {
 
             this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
-            this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000');
+            if (typeof this.defaultIcon !=='undefined') {
+                this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', this.defaultIcon);
+            } else {
+                this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000');
+            }
 
 
             this.dispatchEvent(new CustomEvent("CLICKED_ON_LONLAT", {
