@@ -22,7 +22,13 @@ To run a build
 ```angular2
 npm run build
 ```
+## How to use
 
+Create a new instance of the location picker. The country code is optional.
+```angular2
+const picker = new LocationPicker('nz');
+
+```
 ## Events
 
 To subscribe to an event triggered by the location picker follow this general idea and replace the event iwth the one that you are interested in.

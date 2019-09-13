@@ -4,20 +4,34 @@ import {Observable, Subject} from "rxjs";
 export class NominatimHelper {
 
     private httpRequest: XMLHttpRequest;
-    private nominatimSearch  = 'https://nominatim.openstreetmap.org/search';
+    private nominatimSearch = 'https://nominatim.openstreetmap.org/search';
     private nominatimReverse = 'https://nominatim.openstreetmap.org/search'
     private lonLats: LonLat[];
+    private countryCode: string;
     public foundLonLat: Subject<LonLat[]>;
 
-    constructor() {
+    constructor(countryCode?: string) {
+        if (typeof countryCode !== "undefined") {
+            this.countryCode = countryCode;
+
+        }
         this.httpRequest = new XMLHttpRequest();
         this.httpRequest.onreadystatechange = this.handleResponse;
         this.foundLonLat = new Subject();
     }
 
     public getLonLatByAddress = (query): Observable<LonLat[]> => {
+
+
+        let url = this.nominatimSearch + '/' + query + '?format=json';
+
+        if (typeof this.countryCode !== 'undefined') {
+
+            url = url + '&countrycodes=' + this.countryCode;
+        }
+
         this.lonLats = [];
-        this.httpRequest.open('GET', this.nominatimSearch + '/' + query + '?format=json');
+        this.httpRequest.open('GET', url);
         this.httpRequest.send();
 
         return this.foundLonLat.asObservable();

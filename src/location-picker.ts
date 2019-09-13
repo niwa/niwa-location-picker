@@ -13,6 +13,7 @@ import {NominatimHelper} from "./nominatim-helper";
 import {LonLat} from "./lonLat";
 import markerSource from 'ol/source/Vector.js';
 import * as proj  from 'ol/proj.js';
+import * as Geocoder from 'ol-geocoder';
 import { boundingExtent } from 'ol/extent';
 
 export class LocationPicker implements EventTarget {
@@ -27,10 +28,11 @@ export class LocationPicker implements EventTarget {
     private nominatim: NominatimHelper;
     private geolocatedFeature: Feature;
 
-    constructor(elementRef) {
+    constructor(elementRef,countyCode?) {
+
 
         this.lonlatHelper = new LonlatHelper();
-        this.nominatim = new NominatimHelper();
+        this.nominatim = new NominatimHelper(countyCode);
         // main container
         const rootElement = document.querySelector(elementRef);
 
@@ -38,12 +40,17 @@ export class LocationPicker implements EventTarget {
         const mapContainer = document.createElement('div');
         mapContainer.setAttribute('id', 'niwaLocationPicker');
         const searchFieldContainer = document.createElement('div');
+        searchFieldContainer.setAttribute('id','searchField')
+
+
         const searchButton = document.createElement('button');
-        searchButton.setAttribute('id', 'searchInput');
+        searchButton.setAttribute('id', 'search');
         searchButton.setAttribute('type', 'button');
-        searchButton.innerHTML = 'Search';
+        searchButton.innerHTML = 'search';
         searchButton.addEventListener('click', this.findLocation);
-        searchFieldContainer.appendChild(searchButton);
+
+
+
 
 
         // input field for text
@@ -52,9 +59,10 @@ export class LocationPicker implements EventTarget {
         textInput.setAttribute('type', 'text');
         textInput.setAttribute('id', 'nwLocationField');
         searchFieldContainer.appendChild(textInput);
-
+        searchFieldContainer.appendChild(searchButton);
         rootElement.appendChild(searchFieldContainer);
         rootElement.appendChild(mapContainer);
+
         this.createMap('niwaLocationPicker')
     }
 
@@ -102,6 +110,28 @@ export class LocationPicker implements EventTarget {
             controls: defaultControls({attribution: false}).extend([attribution]),
             target: elementRef,
             view: this.view
+        });
+
+
+        const geocoder = new Geocoder('nominatim', {
+            provider: 'osm',
+            key: '',
+            lang: 'en-NZ',
+            placeholder: 'Address search',
+            targetType: 'glass-button',
+            limit: 5,
+            countrycodes: 'nz',
+            keepOpen: false,
+            preventDefault: true
+        });
+
+        this.map.addControl(geocoder);
+
+        // on a success address choice, add a marker
+        geocoder.on('addresschosen', (event) => {
+            const lonLat = toLonLat(event.coordinate);
+            console.log(lonLat);
+            // this.addMarker(lonLat[0], lonLat[1]);
         });
 
         mapContainer.appendChild(geoLocateButton);
