@@ -5,6 +5,7 @@
   "description": "",
   "private": true,
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest --config jestconfig.json --coverage",
     "build": "tsc",
@@ -12,7 +13,7 @@
   },
   "keywords": [],
   "author": "Uwe Duesing",
-  "license": "ISC",
+  "license": "Creative Commons Attribution-ShareAlike 4.0 International License.",
   "devDependencies": {
     "@types/jest": "^24.0.9",
     "jest": "^24.1.0",
