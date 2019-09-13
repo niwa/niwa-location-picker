@@ -1,8 +1,8 @@
 {
   "name": "niwa-location-picker",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "",
-  "private": true,
+  "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
