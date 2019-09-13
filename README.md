@@ -8,7 +8,7 @@ The picker also fire events  - see the documentation below.
 
 ## Events
 
-To subscribe to an event triggered by the location picker follow this general idea and replace the event iwth the one that you are interested in.
+To subscribe to an event triggered by the location picker follow this general idea and replace the event with the one that you are interested in.
 
 ```angular2
 
