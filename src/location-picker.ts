@@ -12,9 +12,8 @@ import {LonlatHelper} from "./lonlat-helper";
 import {NominatimHelper} from "./nominatim-helper";
 import {LonLat} from "./lonLat";
 import markerSource from 'ol/source/Vector.js';
-import * as proj  from 'ol/proj.js';
-import * as Geocoder from 'ol-geocoder';
-import { boundingExtent } from 'ol/extent';
+import * as proj from 'ol/proj.js';
+import {boundingExtent} from 'ol/extent';
 
 export class LocationPicker implements EventTarget {
 
@@ -46,11 +45,9 @@ export class LocationPicker implements EventTarget {
         const searchButton = document.createElement('button');
         searchButton.setAttribute('id', 'search');
         searchButton.setAttribute('type', 'button');
-        searchButton.innerHTML = 'search';
-        searchButton.addEventListener('click', this.findLocation);
-
-
-
+        searchButton.innerHTML = 'Search';
+        searchButton.addEventListener('click', this.getLocation);
+        searchFieldContainer.appendChild(searchButton);
 
 
         // input field for text
@@ -67,8 +64,11 @@ export class LocationPicker implements EventTarget {
     }
 
 
-    private createMap = (elementRef: string) => {
+    getLocation = () => {
 
+        this.findLocation();
+    }
+    private createMap = (elementRef: string) => {
 
 
         const boundingBox = [-37.3644738, -35.6983921, 173.8963284, 175.9032151];
@@ -80,7 +80,6 @@ export class LocationPicker implements EventTarget {
         this.markerLayer = new VectorLayer({
             source: this.markerSource
         });
-
 
 
         this.view = new View({
@@ -144,7 +143,7 @@ export class LocationPicker implements EventTarget {
 
             }
 
-            const reprojCoorindates = proj.transform(evt.coordinate,this.map.getView().getProjection(), 'EPSG:4326');
+            const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
             this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
@@ -165,10 +164,10 @@ export class LocationPicker implements EventTarget {
     private moveToLonLat = (lonLat: LonLat) => {
         const lontLatProj = fromLonLat([lonLat.lon, lonLat.lat]);
 
-        if (typeof lonLat.boundingBox !=='undefined') {
+        if (typeof lonLat.boundingBox !== 'undefined') {
 
             const extent = this.lonlatHelper.boundingBoxtoExtent(lonLat.boundingBox);
-            const proj_extent = proj.transformExtent(extent,'EPSG:4326','EPSG:3857');
+            const proj_extent = proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 
             this.view.animate({
                 duration: 500,
@@ -184,7 +183,7 @@ export class LocationPicker implements EventTarget {
         }
     }
 
-    public addMarker = (lon: number, lat: number, color: string, url?:string): Feature => {
+    public addMarker = (lon: number, lat: number, color: string, url?: string): Feature => {
         const lontLatProj = fromLonLat([lon, lat]);
 
         const locationMarker = new Feature({
@@ -192,7 +191,7 @@ export class LocationPicker implements EventTarget {
             geometry: new Point(lontLatProj)
         });
 
-        if (typeof url ==='undefined') {
+        if (typeof url === 'undefined') {
             console.log(url);
             const markerVectorStyle = new Style({
                 image: new CircleStyle({
@@ -214,7 +213,6 @@ export class LocationPicker implements EventTarget {
             })
             locationMarker.setStyle(markerIconStyle)
         }
-
 
 
         this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
@@ -249,13 +247,13 @@ export class LocationPicker implements EventTarget {
     }
 
 
-    public findLocation = () => {
+    public findLocation = (searchExpression?: string) => {
 
         if (document.getElementById('locations')) {
             document.getElementById('locations').remove();
         }
 
-        const searchExp = (<HTMLInputElement>document.getElementById('nwLocationField')).value;
+        const searchExp = typeof searchExpression === 'undefined' ? (<HTMLInputElement>document.getElementById('nwLocationField')).value : searchExpression;
 
         const lonLat = this.lonlatHelper.getLonLat(searchExp);
         if (lonLat !== null) {
