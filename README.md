@@ -5,6 +5,7 @@
 
 ![Alt text](./LocationFinder2.png?raw=true "Test")
 
+After install add the styles ````styles.css```` found in the src folder to your project.
 
 Create a new instance of the location picker. The country code is optional.
 ```angular2

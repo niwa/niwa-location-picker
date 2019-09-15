@@ -1,6 +1,6 @@
 {
   "name": "niwa-location-picker",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "",
   "private": false,
   "main": "dist/index.js",
@@ -9,6 +9,10 @@
     "test": "jest --config jestconfig.json --coverage",
     "build": "tsc",
     "start": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/niwa/niwa-location-picker"
   },
   "keywords": [],
   "author": "Uwe Duesing",
