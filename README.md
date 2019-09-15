@@ -69,14 +69,18 @@ When an URL is provided it overrules the color parameter.
 ### removeMarker
 
 To remove a marker from the map hand in the marker to the removeMarker method. The marker needs to be an Openlayers Feature object.
-(See 'addMarker' above).
- 
 
+(See 'addMarker' above).
 ````angular2
 
 locationPicker.removeMarker(Marker)
 
 ````
+ 
+### fitFeaturesIntoView
+
+This method expects an array of Features / Markers. It will then fit the view to show all markers  
+
 
 #### Project setup
 
