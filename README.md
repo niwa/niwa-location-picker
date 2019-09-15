@@ -97,25 +97,42 @@ import './style.css';
 
 const locationPicker = new LocationPicker('body');
 
-locationPicker.addEventListener('BROWSER_GEOLOCATED',(pos)=> {
+locationPicker.addEventListener('BROWSER_GEOLOCATED', (pos) => {
 
     console.log('pos', pos.detail.msg);
 
 
 });
-locationPicker.addEventListener('MAP_CENTERED_ON_LONLAT',(pos)=> {
+locationPicker.addEventListener('MAP_CENTERED_ON_LONLAT', (pos) => {
     console.log('Lon Lat', pos.detail)
 });
-locationPicker.addEventListener('MAP_CENTERED_ON_ADDRESS',(pos)=> {
+locationPicker.addEventListener('MAP_CENTERED_ON_ADDRESS', (pos) => {
     console.log('Lon Lat', pos.detail)
 });
 
 
-const marker = locationPicker.addMarker(160,-37,'#123456');
-setTimeout(() => {
-    locationPicker.removeMarker(marker);
+const marker1 = locationPicker.addMarker(160, -37, '#ff0000');
+const marker2 = locationPicker.addMarker(120, -27, '#00ff00');
+const marker3 = locationPicker.addMarker(160, -27, '#0000ff');
+const marker4 = locationPicker.addMarker(120, -37, '#00ffff');
 
-}, 10000)
+setTimeout(()=> {
+locationPicker.fitFeaturesIntoView([marker1, marker2, marker3, marker4])
+}, 500)
+
+
+setTimeout(()=> {
+    locationPicker.removeMarker(marker1);
+}, 4000)
+setTimeout(()=> {
+    locationPicker.removeMarker(marker2);
+}, 5000)
+setTimeout(()=> {
+    locationPicker.removeMarker(marker3);
+}, 6000)
+setTimeout(()=> {
+    locationPicker.removeMarker(marker4);
+}, 7000)
 
 
 ```

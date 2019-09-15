@@ -14,6 +14,7 @@ var nominatim_helper_1 = require("./nominatim-helper");
 var lonLat_1 = require("./lonLat");
 var Vector_js_1 = require("ol/source/Vector.js");
 var proj = require("ol/proj.js");
+var extent_1 = require("ol/extent");
 var LocationPicker = /** @class */ (function () {
     function LocationPicker(elementRef, options) {
         var _this = this;
@@ -217,6 +218,17 @@ var LocationPicker = /** @class */ (function () {
                 stack[i].call(this, event);
             }
             return !event.defaultPrevented;
+        };
+        this.fitFeaturesIntoView = function (features) {
+            var coordinates = [];
+            features.forEach(function (feature) {
+                console.log(feature);
+                coordinates.push(feature.getGeometry().getCoordinates());
+            });
+            var extent = extent_1.boundingExtent(coordinates);
+            _this.view.fit(extent, {
+                duration: 1000
+            });
         };
         if (typeof options !== 'undefined') {
             this.countryCode = options.countryCode;
