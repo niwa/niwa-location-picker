@@ -25,4 +25,5 @@ export declare class LocationPicker implements EventTarget {
     addEventListener: (type: any, callback: any) => void;
     removeEventListener: (type: any, callback: any) => void;
     dispatchEvent: (event: any) => boolean;
+    fitFeaturesIntoView: (features: any[]) => void;
 }

@@ -321,4 +321,19 @@ export class LocationPicker implements EventTarget {
         }
         return !event.defaultPrevented;
     };
+
+
+    public fitFeaturesIntoView =(features: Feature[]) => {
+
+        const coordinates = [];
+        features.forEach((feature:Feature) => {
+            console.log(feature);
+            coordinates.push(feature.getGeometry().getCoordinates());
+        })
+        const extent = boundingExtent(coordinates);
+        this.view.fit(extent, {
+            duration: 1000
+        });
+    }
+
 }
