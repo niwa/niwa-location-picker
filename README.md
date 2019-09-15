@@ -81,6 +81,9 @@ locationPicker.removeMarker(Marker)
 
 This method expects an array of Features / Markers. It will then fit the view to show all markers  
 
+### removeAllMarkers 
+
+This method removes all markers on the map.
 
 #### Project setup
 
@@ -95,7 +98,6 @@ https://wiki.openstreetmap.org/wiki/Nominatim
 This is for development only.
 
 ```angular2
-
 import {LocationPicker} from "./location-picker";
 import './style.css';
 
@@ -121,21 +123,12 @@ const marker3 = locationPicker.addMarker(160, -27, '#0000ff');
 const marker4 = locationPicker.addMarker(120, -37, '#00ffff');
 
 setTimeout(()=> {
-locationPicker.fitFeaturesIntoView([marker1, marker2, marker3, marker4])
+    locationPicker.fitFeaturesIntoView([marker1, marker2, marker3, marker4])
 }, 500)
 
 
 setTimeout(()=> {
-    locationPicker.removeMarker(marker1);
-}, 4000)
-setTimeout(()=> {
-    locationPicker.removeMarker(marker2);
-}, 5000)
-setTimeout(()=> {
-    locationPicker.removeMarker(marker3);
-}, 6000)
-setTimeout(()=> {
-    locationPicker.removeMarker(marker4);
+    locationPicker.removeAllMarkers();
 }, 7000)
 
 

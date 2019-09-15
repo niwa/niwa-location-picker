@@ -230,6 +230,9 @@ var LocationPicker = /** @class */ (function () {
                 duration: 1000
             });
         };
+        this.removeAllMarkers = function () {
+            _this.markerSource.clear();
+        };
         if (typeof options !== 'undefined') {
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;

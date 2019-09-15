@@ -336,4 +336,8 @@ export class LocationPicker implements EventTarget {
         });
     }
 
+    public removeAllMarkers = () => {
+
+        this.markerSource.clear();
+    }
 }
