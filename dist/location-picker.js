@@ -15,6 +15,7 @@ var lonLat_1 = require("./lonLat");
 var Vector_js_1 = require("ol/source/Vector.js");
 var proj = require("ol/proj.js");
 var extent_1 = require("ol/extent");
+var rxjs_1 = require("rxjs");
 var LocationPicker = /** @class */ (function () {
     function LocationPicker(elementRef, options) {
         var _this = this;
@@ -56,7 +57,6 @@ var LocationPicker = /** @class */ (function () {
                 view: _this.view
             });
             mapContainer.appendChild(geoLocateButton);
-            // this.getGeolocation();
             _this.map.on('click', function (evt) {
                 if (document.getElementById('locations')) {
                     document.getElementById('locations').remove();
@@ -134,22 +134,20 @@ var LocationPicker = /** @class */ (function () {
                 _this.markerSource.removeFeature(feature);
             }
         };
+        /**
+         * Returns the current geolacted position if available;
+         */
         this.getGeolocation = function () {
-            _this.removeMarker(_this.geolocatedFeature);
+            var lonLat = new rxjs_1.Subject();
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    _this.map.getView().setCenter(proj_1.fromLonLat([position.coords.longitude, position.coords.latitude]));
-                    _this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
-                        "bubbles": true,
-                        "cancelable": false,
-                        "detail": { msg: position.coords }
-                    }));
-                    _this.geolocatedFeature = _this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000');
+                    lonLat.next(new lonLat_1.LonLat(position.coords.longitude, position.coords.latitude));
                 });
             }
             else {
-                _this.map.getView().setCenter(proj_1.fromLonLat([174.763336, -40.848461]));
+                lonLat.next(new lonLat_1.LonLat(174.763336, -40.848461));
             }
+            return lonLat.asObservable();
         };
         this.findLocation = function (searchExpression) {
             if (document.getElementById('locations')) {
@@ -229,6 +227,9 @@ var LocationPicker = /** @class */ (function () {
             _this.view.fit(extent, {
                 duration: 1000
             });
+        };
+        this.removeAllMarkers = function () {
+            _this.markerSource.clear();
         };
         if (typeof options !== 'undefined') {
             this.countryCode = options.countryCode;
