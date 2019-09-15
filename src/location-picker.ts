@@ -15,6 +15,7 @@ import markerSource from 'ol/source/Vector.js';
 import * as proj from 'ol/proj.js';
 import {boundingExtent} from 'ol/extent';
 import {Options} from "./options";
+import {Observable, Subject} from "rxjs";
 
 export class LocationPicker implements EventTarget {
 
@@ -123,7 +124,7 @@ export class LocationPicker implements EventTarget {
 
 
         mapContainer.appendChild(geoLocateButton);
-        // this.getGeolocation();
+
 
         this.map.on('click', (evt) => {
             if (document.getElementById('locations')) {
@@ -136,7 +137,7 @@ export class LocationPicker implements EventTarget {
 
             this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
-            if (typeof this.defaultIcon !=='undefined') {
+            if (typeof this.defaultIcon !== 'undefined') {
                 this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', this.defaultIcon);
             } else {
                 this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000');
@@ -219,24 +220,19 @@ export class LocationPicker implements EventTarget {
         }
 
     }
-    private getGeolocation = () => {
-        this.removeMarker(this.geolocatedFeature);
+    /**
+     * Returns the current geolacted position if available;
+     */
+    public getGeolocation = (): Observable<LonLat> => {
+        const lonLat: Subject<LonLat> = new Subject();
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
-                this.map.getView().setCenter(fromLonLat([position.coords.longitude, position.coords.latitude]))
-                this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
-                    "bubbles": true,
-                    "cancelable": false,
-                    "detail": {msg: position.coords}
-                }));
-
-                this.geolocatedFeature = this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000');
+                lonLat.next(new LonLat(position.coords.longitude, position.coords.latitude));
             });
         } else {
-            this.map.getView().setCenter(fromLonLat([174.763336, -40.848461]))
-
+            lonLat.next(new LonLat(174.763336, -40.848461));
         }
-
+        return lonLat.asObservable();
     }
 
 
@@ -323,10 +319,10 @@ export class LocationPicker implements EventTarget {
     };
 
 
-    public fitFeaturesIntoView =(features: Feature[]) => {
+    public fitFeaturesIntoView = (features: Feature[]) => {
 
         const coordinates = [];
-        features.forEach((feature:Feature) => {
+        features.forEach((feature: Feature) => {
             console.log(feature);
             coordinates.push(feature.getGeometry().getCoordinates());
         })

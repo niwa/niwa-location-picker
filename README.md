@@ -84,6 +84,8 @@ This method expects an array of Features / Markers. It will then fit the view to
 ### removeAllMarkers 
 
 This method removes all markers on the map.
+### getGeolocation
+Return an Observable of type LonLat
 
 #### Project setup
 
