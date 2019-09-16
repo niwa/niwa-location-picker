@@ -51,6 +51,9 @@ export class LocationPicker implements EventTarget {
         mapContainer.setAttribute('id', 'niwaLocationPicker');
         const searchFieldContainer = document.createElement('div');
         searchFieldContainer.setAttribute('id', 'searchField')
+        searchFieldContainer.setAttribute('class', 'searchField_invisible')
+
+
 
 
         const searchButton = document.createElement('button');
@@ -69,11 +72,31 @@ export class LocationPicker implements EventTarget {
         searchFieldContainer.appendChild(textInput);
         searchFieldContainer.appendChild(searchButton);
         rootElement.appendChild(searchFieldContainer);
+
+        const toggle = document.createElement('div');
+        toggle.innerHTML = '&#x1F50D;';
+        toggle.setAttribute('id','searchToggle');
+        toggle.addEventListener('click', this.toggleSearchField);
         rootElement.appendChild(mapContainer);
+        rootElement.appendChild(toggle);
 
         this.createMap('niwaLocationPicker')
     }
 
+    toggleSearchField = () => {
+
+        if (document.getElementById('searchField').classList.contains('searchField_invisible')) {
+
+            document.getElementById('searchField').classList.remove('searchField_invisible');
+            document.getElementById('searchField').classList.add('searchField_visible');
+
+        } else {
+            document.getElementById('searchField').classList.remove('searchField_visible');
+            document.getElementById('searchField').classList.add('searchField_invisible');
+        }
+
+        // document.getElementById('searchField')
+    }
 
     getLocation = () => {
 
@@ -186,7 +209,6 @@ export class LocationPicker implements EventTarget {
         });
 
         if (typeof url === 'undefined') {
-            console.log(url);
             const markerVectorStyle = new Style({
                 image: new CircleStyle({
                     fill: new Fill({
@@ -218,29 +240,28 @@ export class LocationPicker implements EventTarget {
         if (typeof feature !== 'undefined') {
             this.markerSource.removeFeature(feature);
         }
-
     }
-    /**
-     * Returns the current geolacted position if available;
-     */
-    public getGeolocation = (): Observable<LonLat> => {
-        const lonLat: Subject<LonLat> = new Subject();
+    public getGeolocation = () => {
+        this.removeMarker(this.geolocatedFeature);
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
-                lonLat.next(new LonLat(position.coords.longitude, position.coords.latitude));
+                this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
+                    "bubbles": true,
+                    "cancelable": false,
+                    "detail": {msg: position.coords}
+                }));
+                if (typeof this.defaultIcon !== 'undefined') {
+                    this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000', this.defaultIcon);
+                } else {
+
+                    this.geolocatedFeature = this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000');
+                }
             });
-        } else {
-            lonLat.next(new LonLat(174.763336, -40.848461));
         }
-        return lonLat.asObservable();
     }
 
-    /**
-     * return an Observable of type LonLat
-     * @param searchExpression
-     */
-    public findLocation = (searchExpression?: string): Observable<LonLat> => {
-        const foundLonLat: Subject<LonLat> = new Subject();
+
+    public findLocation = (searchExpression?: string) => {
         if (document.getElementById('locations')) {
             document.getElementById('locations').remove();
         }
@@ -252,8 +273,9 @@ export class LocationPicker implements EventTarget {
                 "cancelable": false,
                 "detail": {lonLat: lonLat}
             }));
+            document.getElementById('searchField').classList.remove('searchField_visible');
+            document.getElementById('searchField').classList.add('searchField_invisible');
             this.moveToLonLat(lonLat);
-            foundLonLat.next(lonLat)
         } else {
             const locations = this.nominatim.getLonLatByAddress(searchExp).subscribe((lonLats: LonLat[]) => {
                 const locationListRoot = document.createElement('ul');
@@ -268,16 +290,17 @@ export class LocationPicker implements EventTarget {
                             "cancelable": false,
                             "detail": {lonLat: lonLat}
                         }));
+                        document.getElementById('searchField').classList.remove('searchField_visible');
+                        document.getElementById('searchField').classList.add('searchField_invisible');
                         this.moveToLonLat(lonLat);
-                       foundLonLat.next(lonLat);
                     })
                     locationListRoot.appendChild(locationListElement);
                 })
                 document.getElementById('niwaLocationPicker').appendChild(locationListRoot);
-                locations.unsubscribe();
+
             })
         }
-        return foundLonLat.asObservable();
+
     }
 
 
