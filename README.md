@@ -37,7 +37,7 @@ This event is being triggered after a succesfull search for the entered Longitud
 
 This event is being triggered after a succesfull search for the entered place / address.
 
-#### CLICKED_ON_LONLAT
+##### CLICKED_ON_LONLAT
 This event is being triggered after clicking on the map. It will return the lon/lat for the click event. 
 ## Adding / removing markers
 
