@@ -241,7 +241,6 @@ export class LocationPicker implements EventTarget {
         }
     }
     public getGeolocation = () => {
-        this.removeMarker(this.geolocatedFeature);
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
                 this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
@@ -249,12 +248,6 @@ export class LocationPicker implements EventTarget {
                     "cancelable": false,
                     "detail": {msg: position.coords}
                 }));
-                if (typeof this.defaultIcon !== 'undefined') {
-                    this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000', this.defaultIcon);
-                } else {
-
-                    this.geolocatedFeature = this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000');
-                }
             });
         }
     }
