@@ -19,14 +19,18 @@ export declare class LocationPicker implements EventTarget {
     constructor(elementRef: any, options?: Options);
     getLocation: () => void;
     private createMap;
-    private moveToLonLat;
+    moveToLonLat: (lonLat: LonLat) => void;
     addMarker: (lon: number, lat: number, color: string, url?: string) => any;
     removeMarker: (feature: any) => void;
     /**
      * Returns the current geolacted position if available;
      */
     getGeolocation: () => Observable<LonLat>;
-    findLocation: (searchExpression?: string) => void;
+    /**
+     * return an Observable of type LonLat
+     * @param searchExpression
+     */
+    findLocation: (searchExpression?: string) => Observable<LonLat>;
     addEventListener: (type: any, callback: any) => void;
     removeEventListener: (type: any, callback: any) => void;
     dispatchEvent: (event: any) => boolean;

@@ -149,20 +149,25 @@ var LocationPicker = /** @class */ (function () {
             }
             return lonLat.asObservable();
         };
+        /**
+         * return an Observable of type LonLat
+         * @param searchExpression
+         */
         this.findLocation = function (searchExpression) {
+            var foundLonLat = new rxjs_1.Subject();
             if (document.getElementById('locations')) {
                 document.getElementById('locations').remove();
             }
             var searchExp = typeof searchExpression === 'undefined' ? document.getElementById('nwLocationField').value : searchExpression;
             var lonLat = _this.lonlatHelper.getLonLat(searchExp);
             if (lonLat !== null) {
-                _this.map.getView().setCenter(proj_1.fromLonLat([lonLat.lon, lonLat.lat]));
                 _this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_LONLAT", {
                     "bubbles": true,
                     "cancelable": false,
                     "detail": { lonLat: lonLat }
                 }));
-                _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#00ff00');
+                _this.moveToLonLat(lonLat);
+                foundLonLat.next(lonLat);
             }
             else {
                 var locations_1 = _this.nominatim.getLonLatByAddress(searchExp).subscribe(function (lonLats) {
@@ -172,15 +177,14 @@ var LocationPicker = /** @class */ (function () {
                         var locationListElement = document.createElement('li');
                         locationListElement.innerHTML = lonLat.displayName;
                         locationListElement.addEventListener('click', function () {
-                            _this.moveToLonLat(lonLat);
                             locationListRoot.remove();
                             _this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_ADDRESS", {
                                 "bubbles": true,
                                 "cancelable": false,
                                 "detail": { lonLat: lonLat }
                             }));
-                            _this.removeMarker(_this.geolocatedFeature);
-                            _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#00ff00');
+                            _this.moveToLonLat(lonLat);
+                            foundLonLat.next(lonLat);
                         });
                         locationListRoot.appendChild(locationListElement);
                     });
@@ -188,6 +192,7 @@ var LocationPicker = /** @class */ (function () {
                     locations_1.unsubscribe();
                 });
             }
+            return foundLonLat.asObservable();
         };
         this.addEventListener = function (type, callback) {
             if (!(type in this.listeners)) {

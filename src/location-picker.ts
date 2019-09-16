@@ -155,7 +155,7 @@ export class LocationPicker implements EventTarget {
     }
 
 
-    private moveToLonLat = (lonLat: LonLat) => {
+    public moveToLonLat = (lonLat: LonLat) => {
         const lontLatProj = fromLonLat([lonLat.lon, lonLat.lat]);
 
         if (typeof lonLat.boundingBox !== 'undefined') {
@@ -235,54 +235,49 @@ export class LocationPicker implements EventTarget {
         return lonLat.asObservable();
     }
 
-
-    public findLocation = (searchExpression?: string) => {
-
+    /**
+     * return an Observable of type LonLat
+     * @param searchExpression
+     */
+    public findLocation = (searchExpression?: string): Observable<LonLat> => {
+        const foundLonLat: Subject<LonLat> = new Subject();
         if (document.getElementById('locations')) {
             document.getElementById('locations').remove();
         }
-
         const searchExp = typeof searchExpression === 'undefined' ? (<HTMLInputElement>document.getElementById('nwLocationField')).value : searchExpression;
-
         const lonLat = this.lonlatHelper.getLonLat(searchExp);
         if (lonLat !== null) {
-            this.map.getView().setCenter(fromLonLat([lonLat.lon, lonLat.lat]));
             this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_LONLAT", {
                 "bubbles": true,
                 "cancelable": false,
                 "detail": {lonLat: lonLat}
             }));
-            this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#00ff00');
+            this.moveToLonLat(lonLat);
+            foundLonLat.next(lonLat)
         } else {
             const locations = this.nominatim.getLonLatByAddress(searchExp).subscribe((lonLats: LonLat[]) => {
                 const locationListRoot = document.createElement('ul');
                 locationListRoot.setAttribute('id', 'locations')
                 lonLats.forEach((lonLat) => {
-
                     const locationListElement = document.createElement('li');
                     locationListElement.innerHTML = lonLat.displayName;
                     locationListElement.addEventListener('click', () => {
-                        this.moveToLonLat(lonLat);
                         locationListRoot.remove();
-
                         this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_ADDRESS", {
                             "bubbles": true,
                             "cancelable": false,
                             "detail": {lonLat: lonLat}
                         }));
-                        this.removeMarker(this.geolocatedFeature);
-                        this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#00ff00');
+                        this.moveToLonLat(lonLat);
+                       foundLonLat.next(lonLat);
                     })
-
                     locationListRoot.appendChild(locationListElement);
                 })
-
                 document.getElementById('niwaLocationPicker').appendChild(locationListRoot);
-
                 locations.unsubscribe();
             })
         }
-
+        return foundLonLat.asObservable();
     }
 
 
