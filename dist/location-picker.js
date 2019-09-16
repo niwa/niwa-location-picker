@@ -31,6 +31,9 @@ var LocationPicker = /** @class */ (function () {
             // document.getElementById('searchField')
         };
         this.getLocation = function () {
+            if (document.getElementById('locations') !== null) {
+                document.getElementById('locations').remove();
+            }
             _this.findLocation();
         };
         this.createMap = function (elementRef) {
@@ -93,14 +96,17 @@ var LocationPicker = /** @class */ (function () {
                 var extent = _this.lonlatHelper.boundingBoxtoExtent(lonLat.boundingBox);
                 var proj_extent = proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
                 _this.view.animate({
+                    maxZoom: 17,
                     duration: 500,
                 });
                 _this.view.fit(proj_extent, {
+                    maxZoom: 17,
                     duration: 1000
                 });
             }
             else {
                 _this.view.animate({
+                    maxZoom: 13,
                     center: lontLatProj,
                     duration: 500
                 });
@@ -162,9 +168,7 @@ var LocationPicker = /** @class */ (function () {
             }
         };
         this.findLocation = function (searchExpression) {
-            if (document.getElementById('locations')) {
-                document.getElementById('locations').remove();
-            }
+            console.log('finding', document.getElementById('locations'));
             var searchExp = typeof searchExpression === 'undefined' ? document.getElementById('nwLocationField').value : searchExpression;
             var lonLat = _this.lonlatHelper.getLonLat(searchExp);
             if (lonLat !== null) {
@@ -173,12 +177,13 @@ var LocationPicker = /** @class */ (function () {
                     "cancelable": false,
                     "detail": { lonLat: lonLat }
                 }));
-                document.getElementById('searchField').classList.remove('searchField_visible');
-                document.getElementById('searchField').classList.add('searchField_invisible');
                 _this.moveToLonLat(lonLat);
             }
             else {
                 var locations = _this.nominatim.getLonLatByAddress(searchExp).subscribe(function (lonLats) {
+                    if (document.getElementById('locations') !== null) {
+                        document.getElementById('locations').remove();
+                    }
                     var locationListRoot = document.createElement('ul');
                     locationListRoot.setAttribute('id', 'locations');
                     lonLats.forEach(function (lonLat) {
