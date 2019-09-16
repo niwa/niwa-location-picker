@@ -73,12 +73,8 @@ export class LocationPicker implements EventTarget {
         searchFieldContainer.appendChild(searchButton);
         rootElement.appendChild(searchFieldContainer);
 
-        const toggle = document.createElement('div');
-        toggle.innerHTML = '&#x1F50D;';
-        toggle.setAttribute('id','searchToggle');
-        toggle.addEventListener('click', this.toggleSearchField);
+
         rootElement.appendChild(mapContainer);
-        rootElement.appendChild(toggle);
 
         this.createMap('niwaLocationPicker')
     }
