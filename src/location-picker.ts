@@ -95,7 +95,9 @@ export class LocationPicker implements EventTarget {
     }
 
     getLocation = () => {
-
+        if (document.getElementById('locations')!==null) {
+            document.getElementById('locations').remove();
+        }
         this.findLocation();
     }
     private createMap = (elementRef: string) => {
@@ -148,9 +150,7 @@ export class LocationPicker implements EventTarget {
         this.map.on('click', (evt) => {
             if (document.getElementById('locations')) {
                 document.getElementById('locations').remove();
-
-
-            }
+           }
 
             const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
@@ -183,13 +183,16 @@ export class LocationPicker implements EventTarget {
             const proj_extent = proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 
             this.view.animate({
+                maxZoom: 17,
                 duration: 500,
             });
             this.view.fit(proj_extent, {
+                maxZoom: 17,
                 duration: 1000
             });
         } else {
             this.view.animate({
+                maxZoom: 13,
                 center: lontLatProj,
                 duration: 500
             });
@@ -238,7 +241,6 @@ export class LocationPicker implements EventTarget {
         }
     }
     public getGeolocation = () => {
-        this.removeMarker(this.geolocatedFeature);
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
                 this.dispatchEvent(new CustomEvent("BROWSER_GEOLOCATED", {
@@ -246,21 +248,14 @@ export class LocationPicker implements EventTarget {
                     "cancelable": false,
                     "detail": {msg: position.coords}
                 }));
-                if (typeof this.defaultIcon !== 'undefined') {
-                    this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000', this.defaultIcon);
-                } else {
-
-                    this.geolocatedFeature = this.addMarker(position.coords.longitude, position.coords.latitude, '#ff0000');
-                }
             });
         }
     }
 
 
     public findLocation = (searchExpression?: string) => {
-        if (document.getElementById('locations')) {
-            document.getElementById('locations').remove();
-        }
+        console.log('finding', document.getElementById('locations'));
+
         const searchExp = typeof searchExpression === 'undefined' ? (<HTMLInputElement>document.getElementById('nwLocationField')).value : searchExpression;
         const lonLat = this.lonlatHelper.getLonLat(searchExp);
         if (lonLat !== null) {
@@ -269,11 +264,12 @@ export class LocationPicker implements EventTarget {
                 "cancelable": false,
                 "detail": {lonLat: lonLat}
             }));
-            document.getElementById('searchField').classList.remove('searchField_visible');
-            document.getElementById('searchField').classList.add('searchField_invisible');
             this.moveToLonLat(lonLat);
         } else {
             const locations = this.nominatim.getLonLatByAddress(searchExp).subscribe((lonLats: LonLat[]) => {
+                if (document.getElementById('locations')!== null) {
+                    document.getElementById('locations').remove();
+                }
                 const locationListRoot = document.createElement('ul');
                 locationListRoot.setAttribute('id', 'locations')
                 lonLats.forEach((lonLat) => {
@@ -286,6 +282,7 @@ export class LocationPicker implements EventTarget {
                             "cancelable": false,
                             "detail": {lonLat: lonLat}
                         }));
+
                         document.getElementById('searchField').classList.remove('searchField_visible');
                         document.getElementById('searchField').classList.add('searchField_invisible');
                         this.moveToLonLat(lonLat);
@@ -349,5 +346,10 @@ export class LocationPicker implements EventTarget {
     public removeAllMarkers = () => {
 
         this.markerSource.clear();
+    }
+
+    public clearAddressField = () => {
+        const element = <HTMLInputElement> document.getElementById('nwLocationField');
+        element.value='';
     }
 }
