@@ -29,4 +29,5 @@ export declare class LocationPicker implements EventTarget {
     dispatchEvent: (event: any) => boolean;
     fitFeaturesIntoView: (features: any[]) => void;
     removeAllMarkers: () => void;
+    clearAddressField: () => void;
 }

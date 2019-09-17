@@ -241,6 +241,10 @@ var LocationPicker = /** @class */ (function () {
         this.removeAllMarkers = function () {
             _this.markerSource.clear();
         };
+        this.clearAddressField = function () {
+            var element = document.getElementById('nwLocationField');
+            element.value = '';
+        };
         if (typeof options !== 'undefined') {
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;

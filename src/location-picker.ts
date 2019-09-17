@@ -347,4 +347,9 @@ export class LocationPicker implements EventTarget {
 
         this.markerSource.clear();
     }
+
+    public clearAddressField = () => {
+        const element = <HTMLInputElement> document.getElementById('nwLocationField');
+        element.value='';
+    }
 }
