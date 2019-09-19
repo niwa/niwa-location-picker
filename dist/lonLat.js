@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var LonLat = /** @class */ (function () {
     function LonLat(lon, lat, boundingBox, displayName, objectClass) {
-        this.lon = lon;
+        this.lon = lon > 180 ? lon - 360 : lon;
         this.lat = lat;
         this.boundingBox = boundingBox;
         this.displayName = displayName;
