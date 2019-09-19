@@ -1,7 +1,8 @@
 export class LonLat {
 
     constructor(lon: number, lat: number, boundingBox?, displayName?, objectClass?) {
-        this.lon = lon;
+        this.lon = lon > 180 ? lon - 360 : lon;
+
         this.lat = lat;
         this.boundingBox = boundingBox;
         this.displayName = displayName;
