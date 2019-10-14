@@ -36,8 +36,8 @@ var LonlatHelper = /** @class */ (function () {
             var lat;
             if (_this.isLonLat(exp)) {
                 var regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/);
-                var tempLon = regexres[1].toLowerCase();
-                var tempLat = regexres[2].toLowerCase();
+                var tempLon = regexres[2].toLowerCase();
+                var tempLat = regexres[1].toLowerCase();
                 if (tempLon.indexOf('e') !== -1) {
                     lon = parseFloat(tempLon.substr(0, tempLon.indexOf('e')));
                 }
