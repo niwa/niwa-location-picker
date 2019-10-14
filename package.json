@@ -1,6 +1,6 @@
 {
   "name": "niwa-location-picker",
-  "version": "1.3.20",
+  "version": "1.4.19",
   "description": "",
   "private": false,
   "main": "dist/index.js",
