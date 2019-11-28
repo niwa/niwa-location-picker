@@ -136,7 +136,8 @@ export class LocationPicker implements EventTarget {
             layers: [
                 new TileLayer({
                     source: new OSM()
-                }), this.markerLayer
+                }),
+                this.markerLayer
             ],
             controls: defaultControls({attribution: false}).extend([attribution]),
             target: elementRef,
@@ -151,11 +152,21 @@ export class LocationPicker implements EventTarget {
             if (document.getElementById('locations')) {
                 document.getElementById('locations').remove();
            }
-
+ 
             const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
             this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
+
+            let outLat = lonLat.lon;
+            while (outLat > 180) {
+                outLat = outLat - 180;
+            }
+            while (outLat < -180) {
+                outLat = outLat + 360;
+            }
+            lonLat.lon = outLat;
+
             if (typeof this.defaultIcon !== 'undefined') {
                 this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', this.defaultIcon);
             } else {
