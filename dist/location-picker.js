@@ -78,14 +78,7 @@ var LocationPicker = /** @class */ (function () {
                 var reprojCoorindates = proj.transform(evt.coordinate, _this.map.getView().getProjection(), 'EPSG:4326');
                 _this.removeMarker(_this.geolocatedFeature);
                 var lonLat = new lonLat_1.LonLat(reprojCoorindates[0], reprojCoorindates[1]);
-                var outLat = lonLat.lon;
-                while (outLat > 180) {
-                    outLat = outLat - 180;
-                }
-                while (outLat < -180) {
-                    outLat = outLat + 360;
-                }
-                lonLat.lon = outLat;
+                lonLat.lon = _this.lonlatHelper.adjustLongitude(lonLat.lon);
                 if (typeof _this.defaultIcon !== 'undefined') {
                     _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', _this.defaultIcon);
                 }

@@ -158,14 +158,7 @@ export class LocationPicker implements EventTarget {
             this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
 
-            let outLat = lonLat.lon;
-            while (outLat > 180) {
-                outLat = outLat - 180;
-            }
-            while (outLat < -180) {
-                outLat = outLat + 360;
-            }
-            lonLat.lon = outLat;
+            lonLat.lon = this.lonlatHelper.adjustLongitude(lonLat.lon);
 
             if (typeof this.defaultIcon !== 'undefined') {
                 this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', this.defaultIcon);
@@ -183,7 +176,6 @@ export class LocationPicker implements EventTarget {
         })
 
     }
-
 
     public moveToLonLat = (lonLat: LonLat) => {
         const lontLatProj = fromLonLat([lonLat.lon, lonLat.lat]);

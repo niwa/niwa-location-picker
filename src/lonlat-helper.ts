@@ -32,6 +32,12 @@ export class LonlatHelper {
         return validLonlat;
     }
 
+    public adjustLongitude = (longitude: number): number => {
+        while (longitude < -180) {
+            longitude = longitude + 360;
+        }
+        return longitude;
+    }
 
     public getLonLat = (exp): LonLat => {
 
@@ -70,13 +76,6 @@ export class LonlatHelper {
     }
 
     public boundingBoxtoExtent = (boundingBox) => {
-        const lowerCorner = [boundingBox[3], boundingBox[1]];
-        const upperCorner = [boundingBox[2], boundingBox[0]];
-        const extent = [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
-        return extent;
-    }
-
-    public projectExtentToOL = (extent) => {
-        return (proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'))
+        return [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
     }
 }
