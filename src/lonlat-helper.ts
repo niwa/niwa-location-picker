@@ -42,6 +42,7 @@ export class LonlatHelper {
                 longitude = longitude - 360;
             }
         }
+
         return longitude;
     }
 
