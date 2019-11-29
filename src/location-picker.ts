@@ -136,7 +136,8 @@ export class LocationPicker implements EventTarget {
             layers: [
                 new TileLayer({
                     source: new OSM()
-                }), this.markerLayer
+                }),
+                this.markerLayer
             ],
             controls: defaultControls({attribution: false}).extend([attribution]),
             target: elementRef,
@@ -151,11 +152,14 @@ export class LocationPicker implements EventTarget {
             if (document.getElementById('locations')) {
                 document.getElementById('locations').remove();
            }
-
+ 
             const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
             this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
+
+            lonLat.lon = this.lonlatHelper.adjustLongitude(lonLat.lon);
+
             if (typeof this.defaultIcon !== 'undefined') {
                 this.geolocatedFeature = this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', this.defaultIcon);
             } else {
@@ -172,7 +176,6 @@ export class LocationPicker implements EventTarget {
         })
 
     }
-
 
     public moveToLonLat = (lonLat: LonLat) => {
         const lontLatProj = fromLonLat([lonLat.lon, lonLat.lat]);
@@ -231,7 +234,10 @@ export class LocationPicker implements EventTarget {
 
 
         this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
-        this.moveToLonLat(new LonLat(lon, lat));
+        setTimeout(() => {
+                this.moveToLonLat(new LonLat(lon, lat))
+            }, 20
+        );
         return locationMarker;
     }
 
