@@ -33,8 +33,14 @@ export class LonlatHelper {
     }
 
     public adjustLongitude = (longitude: number): number => {
-        while (longitude < -180) {
-            longitude = longitude + 360;
+        if (longitude < -180) {
+            while (longitude < -180) {
+                longitude = longitude + 360;
+            }
+        } else if (longitude > 180) {
+            while (longitude > 180) {
+                longitude = longitude - 360;
+            }
         }
         return longitude;
     }

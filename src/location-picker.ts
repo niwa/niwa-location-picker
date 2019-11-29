@@ -234,7 +234,10 @@ export class LocationPicker implements EventTarget {
 
 
         this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
-        this.moveToLonLat(new LonLat(lon, lat));
+        setTimeout(() => {
+                this.moveToLonLat(new LonLat(lon, lat))
+            }, 20
+        );
         return locationMarker;
     }
 
