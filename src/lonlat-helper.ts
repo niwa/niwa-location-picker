@@ -51,9 +51,10 @@ export class LonlatHelper {
         let lat: number;
 
         if (this.isLonLat(exp)) {
+
             const regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/);
-            const tempLon = regexres[2].toLowerCase();
-            const tempLat = regexres[1].toLowerCase();
+            const tempLon = regexres[1].toLowerCase();
+            const tempLat = regexres[2].toLowerCase();
 
             if (tempLon.indexOf('e') !== -1) {
                 lon = parseFloat(tempLon.substr(0, tempLon.indexOf('e')));
