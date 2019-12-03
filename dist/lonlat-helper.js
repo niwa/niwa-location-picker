@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var lonLat_1 = require("./lonLat");
-var proj = require("ol/proj.js");
 var LonlatHelper = /** @class */ (function () {
     function LonlatHelper() {
         var _this = this;
@@ -30,6 +29,19 @@ var LonlatHelper = /** @class */ (function () {
                 validLonlat = false;
             }
             return validLonlat;
+        };
+        this.adjustLongitude = function (longitude) {
+            if (longitude < -180) {
+                while (longitude < -180) {
+                    longitude = longitude + 360;
+                }
+            }
+            else if (longitude > 180) {
+                while (longitude > 180) {
+                    longitude = longitude - 360;
+                }
+            }
+            return longitude;
         };
         this.getLonLat = function (exp) {
             var lon;
@@ -66,13 +78,7 @@ var LonlatHelper = /** @class */ (function () {
             }
         };
         this.boundingBoxtoExtent = function (boundingBox) {
-            var lowerCorner = [boundingBox[3], boundingBox[1]];
-            var upperCorner = [boundingBox[2], boundingBox[0]];
-            var extent = [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
-            return extent;
-        };
-        this.projectExtentToOL = function (extent) {
-            return (proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857'));
+            return [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
         };
     }
     return LonlatHelper;

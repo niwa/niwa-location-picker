@@ -63,7 +63,8 @@ var LocationPicker = /** @class */ (function () {
                 layers: [
                     new layer_js_1.Tile({
                         source: new OSM_js_1.default()
-                    }), _this.markerLayer
+                    }),
+                    _this.markerLayer
                 ],
                 controls: control_js_1.defaults({ attribution: false }).extend([attribution]),
                 target: elementRef,
@@ -77,6 +78,7 @@ var LocationPicker = /** @class */ (function () {
                 var reprojCoorindates = proj.transform(evt.coordinate, _this.map.getView().getProjection(), 'EPSG:4326');
                 _this.removeMarker(_this.geolocatedFeature);
                 var lonLat = new lonLat_1.LonLat(reprojCoorindates[0], reprojCoorindates[1]);
+                lonLat.lon = _this.lonlatHelper.adjustLongitude(lonLat.lon);
                 if (typeof _this.defaultIcon !== 'undefined') {
                     _this.geolocatedFeature = _this.addMarker(lonLat.lon, lonLat.lat, '#ff0000', _this.defaultIcon);
                 }
@@ -141,7 +143,9 @@ var LocationPicker = /** @class */ (function () {
                 locationMarker.setStyle(markerIconStyle);
             }
             _this.geolocatedFeature = _this.markerSource.addFeature(locationMarker);
-            _this.moveToLonLat(new lonLat_1.LonLat(lon, lat));
+            setTimeout(function () {
+                _this.moveToLonLat(new lonLat_1.LonLat(lon, lat));
+            }, 20);
             return locationMarker;
         };
         this.removeMarker = function (feature) {

@@ -34,11 +34,29 @@ describe('location picker', () => {
         //-37.3644738 173.8963284 -35.6983921 175.9032151
         const lonloatHelper = new LonlatHelper();
         const extent = lonloatHelper.boundingBoxtoExtent([-37.3644738,-35.6983921,-173.8963284,175.9032151]);
-        expect(extent[0]).toBe(175.9032151);
-        expect(extent[1]).toBe(-35.6983921);
-        expect(extent[2]).toBe(-173.8963284);
-        expect(extent[3]).toBe(-37.3644738);
+        expect(extent[0]).toBe(-173.8963284);
+        expect(extent[1]).toBe(-37.3644738);
+        expect(extent[2]).toBe(175.9032151);
+        expect(extent[3]).toBe(-35.6983921);
 
+    })
+
+    it ('should fix the openlayers issue where the map is wrapped infiently from right to left', () => {
+        const lonloatHelper = new LonlatHelper();
+
+        expect(lonloatHelper.adjustLongitude(-174)).toBe(-174);
+        expect(lonloatHelper.adjustLongitude(-14)).toBe(-14);
+        expect(lonloatHelper.adjustLongitude(172)).toBe(172);
+        expect(lonloatHelper.adjustLongitude(-364)).toBe(-4);
+        expect(lonloatHelper.adjustLongitude(-271)).toBe(89);
+        expect(lonloatHelper.adjustLongitude(-180)).toBe(-180);
+        expect(lonloatHelper.adjustLongitude(-181)).toBe(179);
+        expect(lonloatHelper.adjustLongitude(-179)).toBe(-179);
+        expect(lonloatHelper.adjustLongitude(179)).toBe(179);
+        expect(lonloatHelper.adjustLongitude(139)).toBe(139);
+        expect(lonloatHelper.adjustLongitude(180)).toBe(180);
+        expect(lonloatHelper.adjustLongitude(181)).toBe(-179);
+        expect(lonloatHelper.adjustLongitude(360)).toBe(0);
     })
 
     // it('should prject extent into ol', () => {
