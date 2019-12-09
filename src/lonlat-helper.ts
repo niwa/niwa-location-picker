@@ -11,6 +11,7 @@ export class LonlatHelper {
 
         let lon: number = undefined;
         let lat: number = undefined;
+        let LatLonError = false
 
 
         let dir1: string;
@@ -22,8 +23,7 @@ export class LonlatHelper {
 
             if (this.directionAndNumericPresent(regexres[1]) || this.directionAndNumericPresent(regexres[2])) {
                 // and invalid expression like -174e or -37n was detected
-                lon = undefined;
-                lat = undefined;
+                LatLonError = true;
             } else {
                 // the actual format is correct - now we need to see whether n,s,e,w is present ...
                 const values = [regexres[1], regexres[2]];
@@ -34,8 +34,7 @@ export class LonlatHelper {
                         if (this.directionValuePlausible(valueAndDirection[1], valueAndDirection[2])) {
 
                             if (dir1 !== undefined && dir1 === valueAndDirection[2]) {
-                                lon = undefined;
-                                lat = undefined;
+                                LatLonError = true;
 
                             } else {
                                 dir1 = valueAndDirection[2].toLowerCase();
@@ -48,8 +47,7 @@ export class LonlatHelper {
                             }
 
                         } else {
-                            lon = undefined;
-                            lat = undefined;
+                            LatLonError = true;
                         }
 
                     } else {
@@ -64,7 +62,11 @@ export class LonlatHelper {
                                 // be the longiude indeed.
                                 if (value > 90 || value < -90) {
                                     // if so we make it the longitude
-                                    lon = parseFloat(value);
+                                    if (this.longitudePlausible(value)) {
+                                        lon = parseFloat(value);
+                                    } else {
+                                        LatLonError = true;
+                                    }
                                 }
                             }
                         }
@@ -83,8 +85,7 @@ export class LonlatHelper {
                                     lat = parseFloat(value);
                                 } else {
                                     // if not - GAME OVER
-                                    lat = undefined;
-                                    lon = undefined;
+                                    LatLonError = true;
                                 }
                             }
                         }
@@ -92,7 +93,11 @@ export class LonlatHelper {
 
                 })
             }
-            return new LonLat(lon, lat);
+            if (LatLonError) {
+                return new LonLat(undefined, undefined);
+            } else {
+                return new LonLat(lon, lat);
+            }
         }
     }
 

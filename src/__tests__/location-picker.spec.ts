@@ -61,7 +61,7 @@ describe('location picker', () => {
 
 
         // expecting clean run
-        const lonLatInvalid = new LonLat(182, 66);
+        const lonLatInvalid = new LonLat(undefined, undefined);
         const translatedInvalid = lonloatHelper.getLonLat('182 66');
 
         expect(translatedInvalid.lat).toEqual(lonLatInvalid.lat);
