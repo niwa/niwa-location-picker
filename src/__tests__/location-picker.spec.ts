@@ -36,7 +36,30 @@ describe('location picker', () => {
         expect(translatedInvalidFormat.lat).toEqual(lonLatInvalidFormat.lat);
         expect(translatedInvalidFormat.lon).toEqual(lonLatInvalidFormat.lon);
 
+
+        //expecting to populate a new LonLat Object using only numeric values
+        const lonLatNum = new LonLat(175, -37);
+        const translatedLonLatNum = lonloatHelper.getLonLat('-37 175');
+
+        expect(translatedLonLatNum.lat).toEqual(lonLatNum.lat);
+        expect(translatedLonLatNum.lon).toEqual(lonLatNum.lon);
+
+        //expecting to populate a new LonLat Object using only numeric values but reversed
+        const lonLatNumReversed = new LonLat(175, -37);
+        const translatedLonLatNumReversed = lonloatHelper.getLonLat('175 -37');
+
+        expect(translatedLonLatNumReversed.lat).toEqual(lonLatNumReversed.lat);
+        expect(translatedLonLatNumReversed.lon).toEqual(lonLatNumReversed.lon);
+
+
+
+        //expecting to populate undefined as wrong values
+        const translatedLonLatNumReversedBad = lonloatHelper.getLonLat('175 99');
+
+        expect(translatedLonLatNumReversedBad.lat).toEqual(undefined);
+        expect(translatedLonLatNumReversedBad.lon).toEqual(undefined);
     })
+
 
 
 
@@ -86,6 +109,29 @@ describe('location picker', () => {
         expect (lonloatHelper.directionToNumeric(54, 'w')).toBe(54);
         expect (lonloatHelper.directionToNumeric(54, 'n')).toBe(54);
         expect (lonloatHelper.directionToNumeric(54, 's')).toBe(-54);
+
+
+    })
+
+
+    it('should check whether the value is plausible to be a Latitude', () => {
+
+        const lonloatHelper = new LonlatHelper();
+        expect (lonloatHelper.latitudePlausible(-90)).toBeTruthy();
+        expect (lonloatHelper.latitudePlausible(90)).toBeTruthy();
+        expect (lonloatHelper.latitudePlausible(-90.1)).toBeFalsy();
+        expect (lonloatHelper.latitudePlausible(90.1)).toBeFalsy();
+
+
+    })
+
+    it('should check whether the value is plausible to be a Longitude', () => {
+
+        const lonloatHelper = new LonlatHelper();
+        expect (lonloatHelper.longitudePlausible(-180)).toBeTruthy();
+        expect (lonloatHelper.longitudePlausible(180)).toBeTruthy();
+        expect (lonloatHelper.longitudePlausible(-180.1)).toBeFalsy();
+        expect (lonloatHelper.longitudePlausible(180.1)).toBeFalsy();
 
 
     })

@@ -260,11 +260,10 @@ export class LocationPicker implements EventTarget {
 
 
     public findLocation = (searchExpression?: string) => {
-        console.log('finding', document.getElementById('locations'));
 
         const searchExp = typeof searchExpression === 'undefined' ? (<HTMLInputElement>document.getElementById('nwLocationField')).value : searchExpression;
         const lonLat = this.lonlatHelper.getLonLat(searchExp);
-        if (lonLat !== null) {
+        if (lonLat.lat !== undefined && lonLat.lon !== undefined) {
             this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_LONLAT", {
                 "bubbles": true,
                 "cancelable": false,
@@ -340,7 +339,6 @@ export class LocationPicker implements EventTarget {
 
         const coordinates = [];
         features.forEach((feature: Feature) => {
-            console.log(feature);
             coordinates.push(feature.getGeometry().getCoordinates());
         })
         const extent = boundingExtent(coordinates);

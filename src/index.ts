@@ -7,15 +7,12 @@ const locationPicker = new LocationPicker('body');
 
 locationPicker.addEventListener('BROWSER_GEOLOCATED', (pos) => {
 
-    console.log('pos', pos.detail.msg);
 
 
 });
 locationPicker.addEventListener('MAP_CENTERED_ON_LONLAT', (pos) => {
-    console.log('Lon Lat', pos.detail)
 });
 locationPicker.addEventListener('MAP_CENTERED_ON_ADDRESS', (pos) => {
-    console.log('Lon Lat', pos.detail)
 });
 
 
