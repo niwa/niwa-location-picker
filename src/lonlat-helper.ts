@@ -11,10 +11,10 @@ export class LonlatHelper {
 
         let lon: number = undefined;
         let lat: number = undefined;
-        let LatLonError = false
+        let LatLonError = false;
 
 
-        let dir1: string;
+        let direction: string;
         let validLonlat: boolean;
         // checking whether we have a valid lonlat e.g 192.45 -36
         const regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[NSnsWEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSnsWEwe]*)/)
@@ -33,12 +33,12 @@ export class LonlatHelper {
                         let valueAndDirection = value.match(/(\-*1*[0-9]*\.*[0-9]*)([NSnsWEwe]*)/);
                         if (this.directionValuePlausible(valueAndDirection[1], valueAndDirection[2])) {
 
-                            if (dir1 !== undefined && dir1 === valueAndDirection[2]) {
+                            if (direction !== undefined && direction === valueAndDirection[2]) {
                                 LatLonError = true;
 
                             } else {
-                                dir1 = valueAndDirection[2].toLowerCase();
-                                if (dir1 === 'e' || dir1 === 'w') {
+                                direction = valueAndDirection[2].toLowerCase();
+                                if (direction === 'e' || direction === 'w') {
 
                                     lon = this.directionToNumeric(valueAndDirection[1], valueAndDirection[2]);
                                 } else {
