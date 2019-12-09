@@ -165,10 +165,9 @@ var LocationPicker = /** @class */ (function () {
             }
         };
         this.findLocation = function (searchExpression) {
-            console.log('finding', document.getElementById('locations'));
             var searchExp = typeof searchExpression === 'undefined' ? document.getElementById('nwLocationField').value : searchExpression;
             var lonLat = _this.lonlatHelper.getLonLat(searchExp);
-            if (lonLat !== null) {
+            if (lonLat.lat !== undefined && lonLat.lon !== undefined) {
                 _this.dispatchEvent(new CustomEvent("MAP_CENTERED_ON_LONLAT", {
                     "bubbles": true,
                     "cancelable": false,
@@ -234,7 +233,6 @@ var LocationPicker = /** @class */ (function () {
         this.fitFeaturesIntoView = function (features) {
             var coordinates = [];
             features.forEach(function (feature) {
-                console.log(feature);
                 coordinates.push(feature.getGeometry().getCoordinates());
             });
             var extent = extent_1.boundingExtent(coordinates);

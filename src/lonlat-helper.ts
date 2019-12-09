@@ -6,31 +6,163 @@ export class LonlatHelper {
 
     private lonlatregex = '';
 
-    public isLonLat = (exp): boolean => {
+    public getLonLat = (exp): LonLat => {
+
+
+        let lon: number = undefined;
+        let lat: number = undefined;
+        let LatLonError = false;
+
+
+        let direction: string;
         let validLonlat: boolean;
         // checking whether we have a valid lonlat e.g 192.45 -36
-        const regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/)
+        const regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[NSnsWEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSnsWEwe]*)/)
         if (regexres !== null && regexres[1] !== '' && regexres[2] !== '') {
-            // an invalid option has been detected as the user entered a negative lon but also used 'E' or 'W'
-            if (regexres[1].indexOf('-') !== -1 && regexres[1].indexOf('W') !== -1 || (regexres[1].indexOf('E') !== -1)) {
 
-                validLonlat = false;
+
+            if (this.directionAndNumericPresent(regexres[1]) || this.directionAndNumericPresent(regexres[2])) {
+                // and invalid expression like -174e or -37n was detected
+                LatLonError = true;
             } else {
-                validLonlat = true;
-            }
+                // the actual format is correct - now we need to see whether n,s,e,w is present ...
+                const values = [regexres[1], regexres[2]];
+                values.forEach((value, index) => {
+                    if (this.directionPresent(value)) {
 
-            // an invalid option has been detected as the user entered a negative lon but also used 'E' or 'W'
-            if (regexres[2].indexOf('-') !== -1 && (regexres[2].indexOf('S') !== -1 || regexres[2].indexOf('N') !== -1)) {
-                validLonlat = false;
+                        let valueAndDirection = value.match(/(\-*1*[0-9]*\.*[0-9]*)([NSnsWEwe]*)/);
+                        if (this.directionValuePlausible(valueAndDirection[1], valueAndDirection[2])) {
+
+                            if (direction !== undefined && direction === valueAndDirection[2]) {
+                                LatLonError = true;
+
+                            } else {
+                                direction = valueAndDirection[2].toLowerCase();
+                                if (direction === 'e' || direction === 'w') {
+
+                                    lon = this.directionToNumeric(valueAndDirection[1], valueAndDirection[2]);
+                                } else {
+                                    lat = this.directionToNumeric(valueAndDirection[1], valueAndDirection[2]);
+                                }
+                            }
+
+                        } else {
+                            LatLonError = true;
+                        }
+
+                    } else {
+                        // we assume the first value to be Latitude
+                        if (index === 0) {
+                            //checking whether the value could fit the bill
+                            if (this.latitudePlausible(value)) {
+                                // if so we take it for being Latitude
+                                lat = parseFloat(value);
+                            } else {
+                                // if the value does not fit the bill we check whether it could
+                                // be the longiude indeed.
+                                if (value > 90 || value < -90) {
+                                    // if so we make it the longitude
+                                    if (this.longitudePlausible(value)) {
+                                        lon = parseFloat(value);
+                                    } else {
+                                        LatLonError = true;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (index === 1) {
+                            // we assume the second value to be the longitude
+                            if (this.longitudePlausible(value) && lon === undefined) {
+                                // if it fits the bill we take for being the longitude - BUT only if longitude is
+                                // not already populated!
+                                lon = parseFloat(value);
+                            } else {
+                                // if longitude was already poupulated we check whether the second value could be
+                                // the missing latitude
+                                if (this.latitudePlausible(value)) {
+                                    // if so we make it the latitude
+                                    lat = parseFloat(value);
+                                } else {
+                                    // if not - GAME OVER
+                                    LatLonError = true;
+                                }
+                            }
+                        }
+                    }
+
+                })
+            }
+            if (LatLonError) {
+                return new LonLat(undefined, undefined);
             } else {
-                validLonlat = true;
+                return new LonLat(lon, lat);
             }
-
-        } else {
-            validLonlat = false;
         }
-        return validLonlat;
     }
+
+
+    public directionToNumeric(value, direction) {
+        if (direction === 'w' || direction === 'n') {
+            return value * 1;
+        }
+        if (direction === 'e' || direction === 's') {
+            return value * -1;
+        }
+    }
+
+    public latitudePlausible = (lat) => {
+        if (lat >= -90 && lat <= 90) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public longitudePlausible = (lon) => {
+        if (lon >= -180 && lon <= 180) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public directionValuePlausible(value, direction) {
+        if (direction === 'w' || direction === 'e') {
+            if (value >= 0 && value <= 180) {
+                return true
+            } else {
+                return false;
+            }
+        } else if (direction === 'n' || direction === 's') {
+            if (value >= 0 && value <= 90) {
+                return true
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+
+    private directionPresent(exp) {
+        if (exp.toLowerCase().indexOf('w') !== -1 || (exp.toLowerCase().indexOf('e') !== -1) || exp.toLowerCase().indexOf('n') !== -1 || exp.toLowerCase().indexOf('s') !== -1) {
+            return true
+        } else {
+            return false;
+        }
+    }
+
+
+    private directionAndNumericPresent(exp) {
+        if (exp.toLowerCase().indexOf('-') !== -1 && this.directionPresent(exp)) {
+            return true
+        } else {
+            return false;
+        }
+    }
+
 
     public adjustLongitude = (longitude: number): number => {
         if (longitude < -180) {
@@ -45,41 +177,7 @@ export class LonlatHelper {
         return longitude;
     }
 
-    public getLonLat = (exp): LonLat => {
 
-        let lon: number;
-        let lat: number;
-
-        if (this.isLonLat(exp)) {
-
-            const regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[WEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSns]*)/);
-            const tempLon = regexres[1].toLowerCase();
-            const tempLat = regexres[2].toLowerCase();
-
-            if (tempLon.indexOf('e') !== -1) {
-                lon = parseFloat(tempLon.substr(0, tempLon.indexOf('e')));
-            } else if (tempLon.indexOf('w') !== -1) {
-                lon = 0 - parseFloat(tempLon.substr(0, tempLon.indexOf('w')));
-            } else {
-                lon = parseFloat(tempLon);
-            }
-
-
-            if (tempLat.indexOf('n') !== -1) {
-                lat = parseFloat(tempLat.substr(0, tempLat.indexOf('n')));
-            } else if (tempLat.indexOf('s') !== -1) {
-                lat = 0 - parseFloat(tempLat.substr(0, tempLat.indexOf('s')));
-            } else {
-                lat = parseFloat(tempLat);
-            }
-            if (lon > 180 || lon < -180 || lat > 90 || lat < -90) {
-                return null;
-            }
-            return new LonLat(lon, lat)
-        } else {
-            return null;
-        }
-    }
 
     public boundingBoxtoExtent = (boundingBox) => {
         return [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
