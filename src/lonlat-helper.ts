@@ -136,8 +136,7 @@ export class LonlatHelper {
                 return false;
             }
         } else if (direction === 'n' || direction === 's') {
-            if (value >= -90 && value <= 90) {
-                console.log('!!!');
+            if (value >= 0 && value <= 90) {
                 return true
             } else {
                 return false;
@@ -157,7 +156,7 @@ export class LonlatHelper {
 
 
     private directionAndNumericPresent(exp) {
-        if (exp.toLowerCase().indexOf('-') !== -1 && (exp.toLowerCase().indexOf('w') !== -1 || (exp.toLowerCase().indexOf('e') !== -1) || exp.toLowerCase().indexOf('n')!== -1 || exp.toLowerCase().indexOf('s')!== -1)) {
+        if (exp.toLowerCase().indexOf('-') !== -1 && this.directionPresent(exp)) {
             return true
         } else {
             return false;

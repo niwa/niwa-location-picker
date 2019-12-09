@@ -9,7 +9,7 @@ var LonlatHelper = /** @class */ (function () {
             var lon = undefined;
             var lat = undefined;
             var LatLonError = false;
-            var dir1;
+            var direction;
             var validLonlat;
             // checking whether we have a valid lonlat e.g 192.45 -36
             var regexres = exp.match(/(\-*1*[0-9]*\.*[0-9]*[NSnsWEwe]*)[\s,](\s*\-*[0-9]*\.*[0-9]*[NSnsWEwe]*)/);
@@ -25,12 +25,12 @@ var LonlatHelper = /** @class */ (function () {
                         if (_this.directionPresent(value)) {
                             var valueAndDirection = value.match(/(\-*1*[0-9]*\.*[0-9]*)([NSnsWEwe]*)/);
                             if (_this.directionValuePlausible(valueAndDirection[1], valueAndDirection[2])) {
-                                if (dir1 !== undefined && dir1 === valueAndDirection[2]) {
+                                if (direction !== undefined && direction === valueAndDirection[2]) {
                                     LatLonError = true;
                                 }
                                 else {
-                                    dir1 = valueAndDirection[2].toLowerCase();
-                                    if (dir1 === 'e' || dir1 === 'w') {
+                                    direction = valueAndDirection[2].toLowerCase();
+                                    if (direction === 'e' || direction === 'w') {
                                         lon = _this.directionToNumeric(valueAndDirection[1], valueAndDirection[2]);
                                     }
                                     else {
@@ -146,8 +146,7 @@ var LonlatHelper = /** @class */ (function () {
             }
         }
         else if (direction === 'n' || direction === 's') {
-            if (value >= -90 && value <= 90) {
-                console.log('!!!');
+            if (value >= 0 && value <= 90) {
                 return true;
             }
             else {
@@ -165,7 +164,7 @@ var LonlatHelper = /** @class */ (function () {
         }
     };
     LonlatHelper.prototype.directionAndNumericPresent = function (exp) {
-        if (exp.toLowerCase().indexOf('-') !== -1 && (exp.toLowerCase().indexOf('w') !== -1 || (exp.toLowerCase().indexOf('e') !== -1) || exp.toLowerCase().indexOf('n') !== -1 || exp.toLowerCase().indexOf('s') !== -1)) {
+        if (exp.toLowerCase().indexOf('-') !== -1 && this.directionPresent(exp)) {
             return true;
         }
         else {
