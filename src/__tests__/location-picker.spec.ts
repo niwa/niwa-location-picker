@@ -4,42 +4,41 @@ import {LonLat} from "../lonLat";
 describe('location picker', () => {
 
 
-    it('should check for valid lon lat values', () => {
+    it ('should get the right lat/lon', () => {
         const lonloatHelper = new LonlatHelper();
-        expect (lonloatHelper.isLonLat('192.32 -37.23')).toBeTruthy();
-        expect (lonloatHelper.isLonLat('192.32W 37.23S')).toBeTruthy();
-        expect (lonloatHelper.isLonLat('192.32W -37.23S')).toBeFalsy();
-        expect (lonloatHelper.isLonLat('-192.32 -37.23')).toBeTruthy();
-        expect (lonloatHelper.isLonLat('Address line')).toBeFalsy();
+
+        // expecting clean run
+        const lonLat = new LonLat(175, -47);
+        const translated = lonloatHelper.getLonLat('175w 47s');
+
+        expect(translated.lat).toEqual(lonLat.lat);
+        expect(translated.lon).toEqual(lonLat.lon);
+
+
+        //expecting clean run, same lonlat as above
+        const lonLatReversed = new LonLat(175, -47);
+        const translatedReversed = lonloatHelper.getLonLat('47s 175w');
+
+        expect(translatedReversed.lat).toEqual(lonLatReversed.lat);
+        expect(translatedReversed.lon).toEqual(lonLatReversed.lon);
+
+        // expecting to end in undefined lonlat as out of bounnds
+        const lonLatInvalidBounds = new LonLat(undefined, undefined);
+        const translatedInvalidBounds = lonloatHelper.getLonLat('91s 181w');
+
+        expect(translatedInvalidBounds.lat).toEqual(lonLatInvalidBounds.lat);
+        expect(translatedInvalidBounds.lon).toEqual(lonLatInvalidBounds.lon);
+
+        //expecting to fail as mix format
+        const lonLatInvalidFormat = new LonLat(undefined, undefined);
+        const translatedInvalidFormat = lonloatHelper.getLonLat('-37s 173');
+
+        expect(translatedInvalidFormat.lat).toEqual(lonLatInvalidFormat.lat);
+        expect(translatedInvalidFormat.lon).toEqual(lonLatInvalidFormat.lon);
 
     })
 
-    it('should get the lonLat as a typed object', () => {
-        const lonloatHelper = new LonlatHelper();
-        expect(lonloatHelper.getLonLat('171.23E 37.234S')).toEqual(new LonLat(171.23, -37.234));
-        expect(lonloatHelper.getLonLat('172.23W 37.234N')).toEqual(new LonLat(-172.23, 37.234));
-        expect(lonloatHelper.getLonLat('173.23 37.234')).toEqual(new LonLat(173.23, 37.234));
-        expect(lonloatHelper.getLonLat('-174.25 -37.234')).toEqual(new LonLat(-174.25, -37.234));
-        expect(lonloatHelper.getLonLat('-175.25 37.234')).toEqual(new LonLat(-175.25, 37.234));
-        expect(lonloatHelper.getLonLat('176.25W 37.234')).toEqual(new LonLat(-176.25, 37.234));
-        expect(lonloatHelper.getLonLat('276.25W 37.234')).toBeNull();
-        expect(lonloatHelper.getLonLat('276.25W 91.234')).toBeNull();
-        expect(lonloatHelper.getLonLat('76.25W 91.234')).toBeNull();
-        expect(lonloatHelper.getLonLat('This is my address')).toBeNull();
-    })
 
-
-    it ('should turn a bounding box into an extent', () => {
-
-        //-37.3644738 173.8963284 -35.6983921 175.9032151
-        const lonloatHelper = new LonlatHelper();
-        const extent = lonloatHelper.boundingBoxtoExtent([-37.3644738,-35.6983921,-173.8963284,175.9032151]);
-        expect(extent[0]).toBe(-173.8963284);
-        expect(extent[1]).toBe(-37.3644738);
-        expect(extent[2]).toBe(175.9032151);
-        expect(extent[3]).toBe(-35.6983921);
-
-    })
 
     it ('should fix the openlayers issue where the map is wrapped infiently from right to left', () => {
         const lonloatHelper = new LonlatHelper();
@@ -59,13 +58,35 @@ describe('location picker', () => {
         expect(lonloatHelper.adjustLongitude(360)).toBe(0);
     })
 
-    // it('should prject extent into ol', () => {
-    //
-    //     const lonloatHelper = new LonlatHelper();
-    //
-    //     expect(lonloatHelper.projectExtentToOL([175.9032151, -35.6983921, -173.8963284, 37.3644738])).toBe([1,2,3,4])
-    //
-    // })
+
+    it('should test to see if a value and direction is plausible' ,() => {
+        const lonloatHelper = new LonlatHelper();
+        expect (lonloatHelper.directionValuePlausible(180,'e')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(180.1224,'e')).toBeFalsy();
+        expect (lonloatHelper.directionValuePlausible(0,'e')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(-1,'e')).toBeFalsy();
+
+        expect (lonloatHelper.directionValuePlausible(37,'s')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(90,'s')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(90,'n')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(90.1234,'n')).toBeFalsy();
+        expect (lonloatHelper.directionValuePlausible(0,'n')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(-0.1,'n')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(-90,'n')).toBeTruthy();
+        expect (lonloatHelper.directionValuePlausible(-90.1,'n')).toBeFalsy();
 
 
+
+    })
+
+    it ('should return the numeric value of lon / lat with directions', () => {
+        const lonloatHelper = new LonlatHelper();
+
+        expect (lonloatHelper.directionToNumeric(54, 'e')).toBe(-54);
+        expect (lonloatHelper.directionToNumeric(54, 'w')).toBe(54);
+        expect (lonloatHelper.directionToNumeric(54, 'n')).toBe(54);
+        expect (lonloatHelper.directionToNumeric(54, 's')).toBe(-54);
+
+
+    })
 })
