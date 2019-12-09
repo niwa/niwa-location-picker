@@ -38,8 +38,8 @@ export class LonlatHelper {
                                 lat = undefined;
 
                             } else {
-                                dir1 = valueAndDirection[2];
-                                if (valueAndDirection[2] === 'e' || valueAndDirection[2] === 'w') {
+                                dir1 = valueAndDirection[2].toLowerCase();
+                                if (dir1 === 'e' || dir1 === 'w') {
 
                                     lon = this.directionToNumeric(valueAndDirection[1], valueAndDirection[2]);
                                 } else {
@@ -48,7 +48,8 @@ export class LonlatHelper {
                             }
 
                         } else {
-                            return false;
+                            lon = undefined;
+                            lat = undefined;
                         }
 
                     } else {
