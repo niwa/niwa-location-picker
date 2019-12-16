@@ -98,6 +98,8 @@ export class LonlatHelper {
             } else {
                 return new LonLat(lon, lat);
             }
+        } else {
+            return new LonLat(undefined, undefined);
         }
     }
 

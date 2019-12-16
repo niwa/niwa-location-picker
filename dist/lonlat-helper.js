@@ -94,6 +94,9 @@ var LonlatHelper = /** @class */ (function () {
                     return new lonLat_1.LonLat(lon, lat);
                 }
             }
+            else {
+                return new lonLat_1.LonLat(undefined, undefined);
+            }
         };
         this.latitudePlausible = function (lat) {
             if (lat >= -90 && lat <= 90) {
