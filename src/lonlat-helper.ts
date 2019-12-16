@@ -94,10 +94,13 @@ export class LonlatHelper {
                 })
             }
             if (LatLonError) {
+                console.log('error!');
                 return new LonLat(undefined, undefined);
             } else {
                 return new LonLat(lon, lat);
             }
+        } else {
+            return new LonLat(undefined, undefined);
         }
     }
 

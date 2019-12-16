@@ -88,11 +88,15 @@ var LonlatHelper = /** @class */ (function () {
                     });
                 }
                 if (LatLonError) {
+                    console.log('error!');
                     return new lonLat_1.LonLat(undefined, undefined);
                 }
                 else {
                     return new lonLat_1.LonLat(lon, lat);
                 }
+            }
+            else {
+                return new lonLat_1.LonLat(undefined, undefined);
             }
         };
         this.latitudePlausible = function (lat) {
