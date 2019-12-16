@@ -88,7 +88,6 @@ var LonlatHelper = /** @class */ (function () {
                     });
                 }
                 if (LatLonError) {
-                    console.log('error!');
                     return new lonLat_1.LonLat(undefined, undefined);
                 }
                 else {
