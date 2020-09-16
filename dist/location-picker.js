@@ -15,10 +15,12 @@ var lonLat_1 = require("./lonLat");
 var Vector_js_1 = require("ol/source/Vector.js");
 var proj = require("ol/proj.js");
 var extent_1 = require("ol/extent");
+var extent_2 = require("ol/extent");
 var LocationPicker = /** @class */ (function () {
     function LocationPicker(elementRef, options) {
         var _this = this;
         this.listeners = [];
+        this.height = 200;
         this.toggleSearchField = function () {
             if (document.getElementById('searchField').classList.contains('searchField_invisible')) {
                 document.getElementById('searchField').classList.remove('searchField_invisible');
@@ -98,7 +100,7 @@ var LocationPicker = /** @class */ (function () {
                 var extent = _this.lonlatHelper.boundingBoxtoExtent(lonLat.boundingBox);
                 var proj_extent = proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
                 _this.view.animate({
-                    maxZoom: 17,
+                    zoom: 17,
                     duration: 500,
                 });
                 _this.view.fit(proj_extent, {
@@ -108,7 +110,7 @@ var LocationPicker = /** @class */ (function () {
             }
             else {
                 _this.view.animate({
-                    maxZoom: 13,
+                    zoom: 13,
                     center: lontLatProj,
                     duration: 500
                 });
@@ -142,7 +144,7 @@ var LocationPicker = /** @class */ (function () {
                 });
                 locationMarker.setStyle(markerIconStyle);
             }
-            _this.geolocatedFeature = _this.markerSource.addFeature(locationMarker);
+            _this.markerSource.addFeature(locationMarker);
             setTimeout(function () {
                 _this.moveToLonLat(new lonLat_1.LonLat(lon, lat));
             }, 20);
@@ -233,7 +235,7 @@ var LocationPicker = /** @class */ (function () {
         this.fitFeaturesIntoView = function (features) {
             var coordinates = [];
             features.forEach(function (feature) {
-                coordinates.push(feature.getGeometry().getCoordinates());
+                coordinates.push(extent_2.getCenter(feature.getGeometry().getExtent()));
             });
             var extent = extent_1.boundingExtent(coordinates);
             _this.view.fit(extent, {
@@ -250,6 +252,7 @@ var LocationPicker = /** @class */ (function () {
         if (typeof options !== 'undefined') {
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;
+            this.height = options.height;
         }
         this.lonlatHelper = new lonlat_helper_1.LonlatHelper();
         this.nominatim = new nominatim_helper_1.NominatimHelper(this.countryCode);
@@ -258,6 +261,9 @@ var LocationPicker = /** @class */ (function () {
         // container holding the map
         var mapContainer = document.createElement('div');
         mapContainer.setAttribute('id', 'niwaLocationPicker');
+        if (this.height) {
+            mapContainer.style.height = this.height + 'px';
+        }
         var searchFieldContainer = document.createElement('div');
         searchFieldContainer.setAttribute('id', 'searchField');
         searchFieldContainer.setAttribute('class', 'searchField_invisible');

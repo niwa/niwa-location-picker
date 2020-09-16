@@ -15,7 +15,7 @@ import markerSource from 'ol/source/Vector.js';
 import * as proj from 'ol/proj.js';
 import {boundingExtent} from 'ol/extent';
 import {Options} from "./options";
-import {Observable, Subject} from "rxjs";
+import {getCenter} from 'ol/extent';
 
 export class LocationPicker implements EventTarget {
 
@@ -30,14 +30,16 @@ export class LocationPicker implements EventTarget {
     private geolocatedFeature: Feature;
     private countryCode: string;
     private defaultIcon: string;
+    private height: number = 200;
 
     constructor(elementRef, options?: Options) {
 
 
         if (typeof options !== 'undefined') {
 
-            this.countryCode = options.countryCode
+            this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;
+            this.height = options.height;
 
         }
 
@@ -49,6 +51,9 @@ export class LocationPicker implements EventTarget {
         // container holding the map
         const mapContainer = document.createElement('div');
         mapContainer.setAttribute('id', 'niwaLocationPicker');
+        if (this.height) {
+            mapContainer.style.height = this.height + 'px';
+        }
         const searchFieldContainer = document.createElement('div');
         searchFieldContainer.setAttribute('id', 'searchField')
         searchFieldContainer.setAttribute('class', 'searchField_invisible')
@@ -186,7 +191,7 @@ export class LocationPicker implements EventTarget {
             const proj_extent = proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 
             this.view.animate({
-                maxZoom: 17,
+                zoom: 17,
                 duration: 500,
             });
             this.view.fit(proj_extent, {
@@ -195,7 +200,7 @@ export class LocationPicker implements EventTarget {
             });
         } else {
             this.view.animate({
-                maxZoom: 13,
+                zoom: 13,
                 center: lontLatProj,
                 duration: 500
             });
@@ -233,7 +238,7 @@ export class LocationPicker implements EventTarget {
         }
 
 
-        this.geolocatedFeature = this.markerSource.addFeature(locationMarker);
+        this.markerSource.addFeature(locationMarker);
         setTimeout(() => {
                 this.moveToLonLat(new LonLat(lon, lat))
             }, 20
@@ -339,7 +344,7 @@ export class LocationPicker implements EventTarget {
 
         const coordinates = [];
         features.forEach((feature: Feature) => {
-            coordinates.push(feature.getGeometry().getCoordinates());
+            coordinates.push(getCenter(feature.getGeometry().getExtent()));
         })
         const extent = boundingExtent(coordinates);
         this.view.fit(extent, {
