@@ -39,7 +39,8 @@ export class LocationPicker implements EventTarget {
 
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;
-            this.height = (options.height) ? options.height :  this.height;
+            console.log('options.height', options.height);
+            this.height = (typeof options.height != "undefined") ? options.height :  this.height;
 
         }
 
