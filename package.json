@@ -1,6 +1,6 @@
 {
   "name": "niwa-location-picker",
-  "version": "1.5.27",
+  "version": "1.5.28",
   "description": "",
   "private": false,
   "main": "dist/index.js",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "ol": "^5.3.3",
+    "ol": "^6.4.3",
     "rxjs": "^6.5.3"
   }
 }

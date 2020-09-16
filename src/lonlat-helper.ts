@@ -181,7 +181,7 @@ export class LonlatHelper {
 
 
 
-    public boundingBoxtoExtent = (boundingBox) => {
+    public boundingBoxtoExtent = (boundingBox): [number, number, number, number] => {
         return [parseFloat(boundingBox[2]), parseFloat(boundingBox[0]), parseFloat(boundingBox[3]), parseFloat(boundingBox[1])];
     }
 }

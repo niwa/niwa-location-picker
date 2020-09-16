@@ -9,5 +9,5 @@ export declare class LonlatHelper {
     private directionPresent;
     private directionAndNumericPresent;
     adjustLongitude: (longitude: number) => number;
-    boundingBoxtoExtent: (boundingBox: any) => number[];
+    boundingBoxtoExtent: (boundingBox: any) => [number, number, number, number];
 }

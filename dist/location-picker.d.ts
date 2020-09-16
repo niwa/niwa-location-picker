@@ -15,6 +15,7 @@ export declare class LocationPicker implements EventTarget {
     private geolocatedFeature;
     private countryCode;
     private defaultIcon;
+    private height;
     constructor(elementRef: any, options?: Options);
     toggleSearchField: () => void;
     getLocation: () => void;

@@ -95,6 +95,13 @@ https://webpack.js.org/guides/typescript/
 The geolacting functionality is provided by Nominatim 
 https://wiki.openstreetmap.org/wiki/Nominatim
 
+### Gotcha's
+Since the update to openlayers 6, the map container must now have a height defined to render.
+This is set to 200px by default, but can be overridden by passing a numeric height value to the constructor, e.g.
+
+```angular2
+const locationPicker = new LocationPicker('body', { height: 350 });
+```
 
 ### Index.ts Cheat sheet
 This is for development only.
