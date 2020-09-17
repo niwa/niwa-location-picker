@@ -78,7 +78,7 @@ var LocationPicker = /** @class */ (function () {
                     document.getElementById('locations').remove();
                 }
                 var reprojCoorindates = proj.transform(evt.coordinate, _this.map.getView().getProjection(), 'EPSG:4326');
-                _this.removeMarker(_this.geolocatedFeature);
+                // this.removeMarker(this.geolocatedFeature);
                 var lonLat = new lonLat_1.LonLat(reprojCoorindates[0], reprojCoorindates[1]);
                 lonLat.lon = _this.lonlatHelper.adjustLongitude(lonLat.lon);
                 if (typeof _this.defaultIcon !== 'undefined') {

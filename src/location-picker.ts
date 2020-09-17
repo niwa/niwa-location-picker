@@ -159,7 +159,7 @@ export class LocationPicker implements EventTarget {
  
             const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
-            this.removeMarker(this.geolocatedFeature);
+            // this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
 
             lonLat.lon = this.lonlatHelper.adjustLongitude(lonLat.lon);
