@@ -159,6 +159,7 @@ export class LocationPicker implements EventTarget {
  
             const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
+            // SV-257 this was causing issues post openlayers6
             // this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
 
