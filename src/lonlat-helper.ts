@@ -107,7 +107,7 @@ export class LonlatHelper {
     public directionToNumeric(value, direction) {
         if (direction === 'w' || direction === 'n') {
             return value * 1;
-        }``
+        }
         if (direction === 'e' || direction === 's') {
             return value * -1;
         }

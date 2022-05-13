@@ -254,7 +254,7 @@ var LocationPicker = /** @class */ (function () {
         if (typeof options !== 'undefined') {
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;
-            this.height = (typeof options.height != "undefined") ? options.height : this.height;
+            this.height = (typeof options.height !== "undefined") ? options.height : this.height;
         }
         this.lonlatHelper = new lonlat_helper_1.LonlatHelper();
         this.nominatim = new nominatim_helper_1.NominatimHelper(this.countryCode);

@@ -136,7 +136,6 @@ var LonlatHelper = /** @class */ (function () {
         if (direction === 'w' || direction === 'n') {
             return value * 1;
         }
-        "";
         if (direction === 'e' || direction === 's') {
             return value * -1;
         }
