@@ -1,12 +1,12 @@
 import OlMap from 'ol/Map';
-import { Vector as VectorLayer } from 'ol/layer.js';
+import Feature from 'ol/Feature.js';
 import { LonlatHelper } from "./lonlat-helper";
 import { LonLat } from "./lonLat";
 import markerSource from 'ol/source/Vector.js';
 import { Options } from "./options";
 export declare class LocationPicker implements EventTarget {
     map: OlMap;
-    markerLayer: VectorLayer;
+    markerLayer: any;
     markerSource: markerSource;
     lonlatHelper: LonlatHelper;
     private view;
@@ -21,14 +21,14 @@ export declare class LocationPicker implements EventTarget {
     getLocation: () => void;
     private createMap;
     moveToLonLat: (lonLat: LonLat) => void;
-    addMarker: (lon: number, lat: number, color: string, url?: string) => any;
-    removeMarker: (feature: any) => void;
+    addMarker: (lon: number, lat: number, color: string, url?: string) => Feature;
+    removeMarker: (feature: Feature) => void;
     getGeolocation: () => void;
     findLocation: (searchExpression?: string) => void;
     addEventListener: (type: any, callback: any) => void;
     removeEventListener: (type: any, callback: any) => void;
     dispatchEvent: (event: any) => boolean;
-    fitFeaturesIntoView: (features: any[]) => void;
+    fitFeaturesIntoView: (features: Feature[]) => void;
     removeAllMarkers: () => void;
     clearAddressField: () => void;
 }

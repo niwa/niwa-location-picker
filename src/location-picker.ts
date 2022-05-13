@@ -20,7 +20,7 @@ import {getCenter} from 'ol/extent';
 export class LocationPicker implements EventTarget {
 
     public map: OlMap;
-    public markerLayer: VectorLayer;
+    public markerLayer: any;
     public markerSource: markerSource;
     public lonlatHelper: LonlatHelper;
 
@@ -39,8 +39,7 @@ export class LocationPicker implements EventTarget {
 
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;
-            this.height = options.height;
-
+            this.height = (typeof options.height !== "undefined") ? options.height :  this.height;
         }
 
         this.lonlatHelper = new LonlatHelper();
@@ -160,7 +159,8 @@ export class LocationPicker implements EventTarget {
  
             const reprojCoorindates = proj.transform(evt.coordinate, this.map.getView().getProjection(), 'EPSG:4326');
 
-            this.removeMarker(this.geolocatedFeature);
+            // SV-257 this was causing issues post openlayers6
+            // this.removeMarker(this.geolocatedFeature);
             const lonLat = new LonLat(reprojCoorindates[0], reprojCoorindates[1]);
 
             lonLat.lon = this.lonlatHelper.adjustLongitude(lonLat.lon);
