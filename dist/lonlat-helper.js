@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LonlatHelper = void 0;
 var lonLat_1 = require("./lonLat");
 var LonlatHelper = /** @class */ (function () {
     function LonlatHelper() {

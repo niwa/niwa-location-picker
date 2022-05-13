@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.LocationPicker = void 0;
 var Map_1 = require("ol/Map");
 var View_js_1 = require("ol/View.js");
 var proj_1 = require("ol/proj");
@@ -48,7 +49,7 @@ var LocationPicker = /** @class */ (function () {
             });
             _this.view = new View_js_1.default({
                 zoom: 6,
-                center: proj_1.fromLonLat([174.763336, -40.848461])
+                center: (0, proj_1.fromLonLat)([174.763336, -40.848461])
             });
             // adding in geolocate button
             var mapContainer = document.querySelector('#' + elementRef);
@@ -68,7 +69,7 @@ var LocationPicker = /** @class */ (function () {
                     }),
                     _this.markerLayer
                 ],
-                controls: control_js_1.defaults({ attribution: false }).extend([attribution]),
+                controls: (0, control_js_1.defaults)({ attribution: false }).extend([attribution]),
                 target: elementRef,
                 view: _this.view
             });
@@ -96,7 +97,7 @@ var LocationPicker = /** @class */ (function () {
             });
         };
         this.moveToLonLat = function (lonLat) {
-            var lontLatProj = proj_1.fromLonLat([lonLat.lon, lonLat.lat]);
+            var lontLatProj = (0, proj_1.fromLonLat)([lonLat.lon, lonLat.lat]);
             if (typeof lonLat.boundingBox !== 'undefined') {
                 var extent = _this.lonlatHelper.boundingBoxtoExtent(lonLat.boundingBox);
                 var proj_extent = proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
@@ -118,7 +119,7 @@ var LocationPicker = /** @class */ (function () {
             }
         };
         this.addMarker = function (lon, lat, color, url) {
-            var lontLatProj = proj_1.fromLonLat([lon, lat]);
+            var lontLatProj = (0, proj_1.fromLonLat)([lon, lat]);
             var locationMarker = new Feature_js_1.default({
                 type: 'locationFound',
                 geometry: new Point_js_1.default(lontLatProj)
@@ -236,9 +237,9 @@ var LocationPicker = /** @class */ (function () {
         this.fitFeaturesIntoView = function (features) {
             var coordinates = [];
             features.forEach(function (feature) {
-                coordinates.push(extent_2.getCenter(feature.getGeometry().getExtent()));
+                coordinates.push((0, extent_2.getCenter)(feature.getGeometry().getExtent()));
             });
-            var extent = extent_1.boundingExtent(coordinates);
+            var extent = (0, extent_1.boundingExtent)(coordinates);
             _this.view.fit(extent, {
                 duration: 1000
             });

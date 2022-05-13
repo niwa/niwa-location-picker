@@ -20,7 +20,7 @@ import {getCenter} from 'ol/extent';
 export class LocationPicker implements EventTarget {
 
     public map: OlMap;
-    public markerLayer: VectorLayer;
+    public markerLayer: any;
     public markerSource: markerSource;
     public lonlatHelper: LonlatHelper;
 

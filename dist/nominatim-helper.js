@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NominatimHelper = void 0;
 var lonLat_1 = require("./lonLat");
 var rxjs_1 = require("rxjs");
 var NominatimHelper = /** @class */ (function () {
