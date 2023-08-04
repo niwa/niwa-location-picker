@@ -8,6 +8,7 @@ import Point from 'ol/geom/Point.js';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
 import {Circle as CircleStyle, Fill, Icon, Stroke, Style} from 'ol/style.js';
 import OSM from 'ol/source/OSM.js';
+import XYZ from 'ol/source/XYZ.js';
 import {LonlatHelper} from "./lonlat-helper";
 import {NominatimHelper} from "./nominatim-helper";
 import {LonLat} from "./lonLat";
@@ -30,7 +31,8 @@ export class LocationPicker implements EventTarget {
     private geolocatedFeature: Feature;
     private countryCode: string;
     private defaultIcon: string;
-    private height: number = 200;
+    private height: number = 200
+    private extraLayers: { url: string, apiKey: string }[] = [];
 
     constructor(elementRef, options?: Options) {
 
@@ -40,6 +42,7 @@ export class LocationPicker implements EventTarget {
             this.countryCode = options.countryCode;
             this.defaultIcon = options.defaultIcon;
             this.height = (typeof options.height !== "undefined") ? options.height :  this.height;
+            this.extraLayers = options.layers;
         }
 
         this.lonlatHelper = new LonlatHelper();
@@ -137,12 +140,21 @@ export class LocationPicker implements EventTarget {
             collapsible: false
         });
         this.map = new OlMap({
-            layers: [
-                new TileLayer({
-                    source: new OSM()
-                }),
+            layers: (this.extraLayers.length < 1
+                ? [
+                    new TileLayer({
+                        source: new OSM()
+                    })
+                ]
+                : this.extraLayers.map((extraLayer) => {
+                    return new TileLayer({
+                    source: new XYZ({
+                        url: extraLayer.url + '?api=' + extraLayer.apiKey
+                    })
+                })
+            })).concat([
                 this.markerLayer
-            ],
+            ]),
             controls: defaultControls({attribution: false}).extend([attribution]),
             target: elementRef,
             view: this.view
