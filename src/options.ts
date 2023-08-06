@@ -3,4 +3,5 @@ export class Options {
     defaultIcon?: string;
     addressSearch?: boolean;
     height?: number;
+    layers?: { url: string, apiKey: string }[];
 }
